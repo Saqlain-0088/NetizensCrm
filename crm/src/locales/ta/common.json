@@ -1,0 +1,47 @@
+{
+    "common": {
+        "dashboard": "டேஷ்போர்டு",
+        "pipeline": "பைப்லைன் (Deals)",
+        "team": "எனது அணி",
+        "newLead": "புதிய லீட்",
+        "settings": "அமைப்புகள்",
+        "logout": "வெளியேறு",
+        "searchPlaceholder": "தேடுக...",
+        "mainMenu": "மெனு",
+        "userProfile": "பயனர்"
+    },
+    "sidebar": {
+        "brand": "லூமினா CRM"
+    },
+    "dashboard": {
+        "title": "வணிக கண்ணோட்டம்",
+        "subtitle": "உங்கள் விற்பனை மற்றும் செயல்திறன்.",
+        "liveView": "நேரடி அறிக்கை",
+        "archive": "காப்பகம்",
+        "autoCapture": "தானியங்கி பிடிப்பு",
+        "pipelineValue": "பைப்லைன் மதிப்பு",
+        "closedRevenue": "வருவாய்",
+        "openDeals": "திறந்த ஒப்பந்தங்கள்",
+        "avgDealSize": "சராசரி ஒப்பந்த அளவு",
+        "revenueVelocity": "வருவாய் வேகம்",
+        "discoveryStages": "கண்டுபிடிப்பு நிலைகள்",
+        "keyOpportunities": "முக்கிய வாய்ப்புகள்",
+        "companyLead": "நிறுவனம் / லீட்",
+        "phase": "கட்டம்",
+        "estValue": "மதிப்பு",
+        "owner": "உரிமையாளர்",
+        "managerPipeline": "பைப்லைனை நிர்வகி"
+    },
+    "login": {
+        "title": "மீண்டும் வருக",
+        "subtitle": "உங்கள் கணக்கில் உள்நுழையவும்",
+        "email": "மின்னஞ்சல்",
+        "password": "கடவுச்சொல்",
+        "signIn": "உள்நுழைக",
+        "signingIn": "உள்நுழைகிறது...",
+        "forgotPassword": "கடவுச்சொல்லை மறந்துவிட்டீர்களா?",
+        "terms": "விதிமுறைகள்",
+        "privacy": "தனியுரிமை கொள்கை",
+        "agreement": "உள்நுழைவதன் மூலம், நீங்கள் ஒப்புக்கொள்கிறீர்கள்"
+    }
+}

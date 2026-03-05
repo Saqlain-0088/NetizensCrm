@@ -1,0 +1,47 @@
+{
+    "common": {
+        "dashboard": "डॅशबोर्ड",
+        "pipeline": "पाइपलाइन",
+        "team": "टीम",
+        "newLead": "नवीन लीड",
+        "settings": "सेटिंग्ज",
+        "logout": "लॉग आउट",
+        "searchPlaceholder": "शोधा...",
+        "mainMenu": "मुख्य मेनू",
+        "userProfile": "वापरकर्ता प्रोफाइल"
+    },
+    "sidebar": {
+        "brand": "लुमिना सीआरएम"
+    },
+    "dashboard": {
+        "title": "कार्यकारी विहंगावलोकन",
+        "subtitle": "व्यावसायिक कामगिरी आणि पाइपलाइन आरोग्य.",
+        "liveView": "थेट दृश्य",
+        "archive": "संग्रह",
+        "autoCapture": "स्वयं-कॅप्चर",
+        "pipelineValue": "पाइपलाइन मूल्य",
+        "closedRevenue": "बंद महसूल",
+        "openDeals": "खुले व्यवहार",
+        "avgDealSize": "सरासरी व्यवहार आकार",
+        "revenueVelocity": "महसूल वेग",
+        "discoveryStages": "शोध टप्पे",
+        "keyOpportunities": "महत्त्वाच्या संधी",
+        "companyLead": "कंपनी / लीड",
+        "phase": "टप्पा",
+        "estValue": "अंदाजे मूल्य",
+        "owner": "मालक",
+        "managerPipeline": "पाइपलाइन व्यवस्थापित करा"
+    },
+    "login": {
+        "title": "पुन्हा स्वागत आहे",
+        "subtitle": "आपल्या खात्यात प्रवेश करण्यासाठी आपली ओळखपत्रे प्रविष्ट करा",
+        "email": "ईमेल",
+        "password": "पासवर्ड",
+        "signIn": "साइन इन करा",
+        "signingIn": "साइन इन करत आहे...",
+        "forgotPassword": "पासवर्ड विसरलात?",
+        "terms": "सेवा अटी",
+        "privacy": "गोपनीयता धोरण",
+        "agreement": "सुरू ठेवा वर क्लिक करून, आपण आमच्याशी सहमत आहात"
+    }
+}

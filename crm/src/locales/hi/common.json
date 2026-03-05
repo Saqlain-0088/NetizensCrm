@@ -1,0 +1,48 @@
+{
+    "common": {
+        "dashboard": "मुख्य डैशबोर्ड",
+        "pipeline": "बिक्री सौदे (Deals)",
+        "team": "मेरी टीम",
+        "newLead": "नया ग्राहक जोड़ें",
+        "settings": "सेटिंग्स",
+        "logout": "लॉग आउट",
+        "searchPlaceholder": "ग्राहक खोजें...",
+        "mainMenu": "नेविगेशन",
+        "userProfile": "उपयोगकर्ता",
+        "import": "आयात करें (Import)"
+    },
+    "sidebar": {
+        "brand": "लुमिना CRM"
+    },
+    "dashboard": {
+        "title": "व्यापार अवलोकन",
+        "subtitle": "आपकी बिक्री और प्रदर्शन की रिपोर्ट।",
+        "liveView": "लाइव रिपोर्ट",
+        "archive": "पुराना डेटा",
+        "autoCapture": "ऑटो-कैप्चर",
+        "pipelineValue": "कुल संभावित बिक्री",
+        "closedRevenue": "कमाई (Revenue)",
+        "openDeals": "चल रहे सौदे",
+        "avgDealSize": "औसत सौदा",
+        "revenueVelocity": "कमाई की गति",
+        "discoveryStages": "सौदा चरण",
+        "keyOpportunities": "महत्वपूर्ण अवसर",
+        "companyLead": "कंपनी / ग्राहक",
+        "phase": "चरण",
+        "estValue": "मूल्य",
+        "owner": "जिम्मेदार",
+        "managerPipeline": "सौदे देखें"
+    },
+    "login": {
+        "title": "नमस्ते! स्वागत है",
+        "subtitle": "अपने खाते में लॉग इन करें",
+        "email": "ईमेल आईडी",
+        "password": "पासवर्ड",
+        "signIn": "लॉग इन करें",
+        "signingIn": "लॉग इन हो रहा है...",
+        "forgotPassword": "पासवर्ड भूल गए?",
+        "terms": "नियम और शर्तें",
+        "privacy": "गोपनीयता नीति",
+        "agreement": "लॉग इन करके, आप सहमत हैं"
+    }
+}

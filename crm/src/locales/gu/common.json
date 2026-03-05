@@ -1,0 +1,47 @@
+{
+    "common": {
+        "dashboard": "મુખ્ય ડેશબોર્ડ",
+        "pipeline": "પાઈપલાઈન (Deals)",
+        "team": "મારી ટીમ",
+        "newLead": "નવી લીડ ઉમેરો",
+        "settings": "સેટિંગ્સ",
+        "logout": "લોગ આઉટ",
+        "searchPlaceholder": "શોધો...",
+        "mainMenu": "મેનુ",
+        "userProfile": "વપરાશકર્તા"
+    },
+    "sidebar": {
+        "brand": "લુમિના CRM"
+    },
+    "dashboard": {
+        "title": "વ્યાપાર અવલોકન",
+        "subtitle": "તમારું વેચાણ અને પ્રદર્શન.",
+        "liveView": "લાઈવ રિપોર્ટ",
+        "archive": "આર્કાઇવ",
+        "autoCapture": "ઓટો-કેપ્ચર",
+        "pipelineValue": "કુલ વેચાણ મૂલ્ય",
+        "closedRevenue": "આવક (Revenue)",
+        "openDeals": "ચાલુ સોદા",
+        "avgDealSize": "સરેરાશ સોદો",
+        "revenueVelocity": "આવક ગતિ",
+        "discoveryStages": "તબક્કાઓ",
+        "keyOpportunities": "મહત્વપૂર્ણ તકો",
+        "companyLead": "કંપની / ગ્રાહક",
+        "phase": "તબક્કો",
+        "estValue": "મૂલ્ય",
+        "owner": "જવાબદાર",
+        "managerPipeline": "પાઈપલાઈન જુઓ"
+    },
+    "login": {
+        "title": "સ્વાગત છે",
+        "subtitle": "તમારા એકાઉન્ટમાં લોગ ઇન કરો",
+        "email": "ઇમેઇલ",
+        "password": "પાસવર્ડ",
+        "signIn": "લોગ ઇન કરો",
+        "signingIn": "લોગ ઇન થઈ રહ્યું છે...",
+        "forgotPassword": "પાસવર્ડ ભૂલી ગયા છો?",
+        "terms": "નિયમો અને શરતો",
+        "privacy": "ગોપનીયતા નીતિ",
+        "agreement": "લોગ ઇન કરીને, તમે સંમત થાઓ છો"
+    }
+}

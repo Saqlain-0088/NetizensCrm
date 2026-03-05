@@ -1,0 +1,4 @@
+name,company,email,phone,value,source,priority
+Bruce Wayne,Wayne Enterprises,bruce@wayne.com,555-0123,1000000,LinkedIn,Urgent
+Clark Kent,Daily Planet,clark@dailyplanet.com,555-0456,500,Referral,Low
+Diana Prince,Themyscira Inc,diana@themyscira.com,555-0789,50000,Website,High

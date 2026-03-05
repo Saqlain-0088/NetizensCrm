@@ -1,0 +1,47 @@
+{
+    "common": {
+        "dashboard": "প্রধান ড্যাশবোর্ড",
+        "pipeline": "পাইপলাইন (Deals)",
+        "team": "আমার টিম",
+        "newLead": "নতুন লিড যোগ করুন",
+        "settings": "সেটিংস",
+        "logout": "লগ আউট",
+        "searchPlaceholder": "অনুসন্ধান...",
+        "mainMenu": "মেনু",
+        "userProfile": "ব্যবহারকারী"
+    },
+    "sidebar": {
+        "brand": "লুমিনা CRM"
+    },
+    "dashboard": {
+        "title": "ব্যাবসায়িক ওভারভিউ",
+        "subtitle": "আপনার বিক্রয় এবং কর্মক্ষমতা।",
+        "liveView": "লাইভ রিপোর্ট",
+        "archive": "আর্কাইভ",
+        "autoCapture": "অটো-ক্যাপচার",
+        "pipelineValue": "পাইপলাইন মূল্য",
+        "closedRevenue": "আয় (Revenue)",
+        "openDeals": "চলমান ডিল",
+        "avgDealSize": "গড় ডিল আকার",
+        "revenueVelocity": "আয়ের গতি",
+        "discoveryStages": "পর্যায়সমূহ",
+        "keyOpportunities": "গুরুত্বপূর্ণ সুযোগ",
+        "companyLead": "কোম্পানি / গ্রাহক",
+        "phase": "পর্যায়",
+        "estValue": "মূল্য",
+        "owner": "মালিক",
+        "managerPipeline": "পাইপলাইন দেখুন"
+    },
+    "login": {
+        "title": "স্বাগতম",
+        "subtitle": "আপনার অ্যাকাউন্টে লগ ইন করুন",
+        "email": "ইমেল",
+        "password": "পাসওয়ার্ড",
+        "signIn": "লগ ইন করুন",
+        "signingIn": "লগ ইন হচ্ছে...",
+        "forgotPassword": "পাসওয়ার্ড ভুলে গেছেন?",
+        "terms": "শর্তাবলী",
+        "privacy": "গোপনীয়তা নীতি",
+        "agreement": "লগ ইন করে, আপনি সম্মত হচ্ছেন"
+    }
+}

@@ -1,0 +1,48 @@
+{
+    "common": {
+        "dashboard": "Overview",
+        "pipeline": "Pipeline",
+        "team": "Team",
+        "newLead": "New Lead",
+        "settings": "Settings",
+        "logout": "Logout",
+        "searchPlaceholder": "Search...",
+        "mainMenu": "Main Menu",
+        "userProfile": "User Profile",
+        "import": "Import"
+    },
+    "sidebar": {
+        "brand": "Lumina CRM"
+    },
+    "dashboard": {
+        "title": "Executive Overview",
+        "subtitle": "Commercial performance and pipeline health.",
+        "liveView": "Live View",
+        "archive": "Archive",
+        "autoCapture": "Auto-Capture",
+        "pipelineValue": "Pipeline Value",
+        "closedRevenue": "Closed Revenue",
+        "openDeals": "Open Deals",
+        "avgDealSize": "Avg. Deal Size",
+        "revenueVelocity": "Revenue Velocity",
+        "discoveryStages": "Discovery Stages",
+        "keyOpportunities": "Key Opportunities",
+        "companyLead": "Company / Lead",
+        "phase": "Phase",
+        "estValue": "Est. Value",
+        "owner": "Owner",
+        "managerPipeline": "Manage Pipeline"
+    },
+    "login": {
+        "title": "Welcome back",
+        "subtitle": "Enter your credentials to access your account",
+        "email": "Email",
+        "password": "Password",
+        "signIn": "Sign In",
+        "signingIn": "Signing In...",
+        "forgotPassword": "Forgot password?",
+        "terms": "Terms of Service",
+        "privacy": "Privacy Policy",
+        "agreement": "By clicking continue, you agree to our"
+    }
+}
