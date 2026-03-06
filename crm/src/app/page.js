@@ -79,7 +79,7 @@ export default function Dashboard() {
             <button className="px-3 py-1 text-xs font-semibold text-muted-foreground hover:text-foreground rounded-md">{t('dashboard.archive')}</button>
           </div>
           <Button asChild size="sm" className="bg-indigo-600 hover:bg-indigo-700">
-            <Link href="/leads/new">
+            <Link href="/leads/new" prefetch={false}>
               <Zap size={14} className="mr-2 fill-current" /> {t('dashboard.autoCapture')}
             </Link>
           </Button>
@@ -179,7 +179,7 @@ export default function Dashboard() {
             <StageProgress label="Negotiation" value={15} color="bg-amber-500" count={2} />
 
             <div className="mt-8 pt-6 border-t border-border/50 text-center">
-              <Link href="/leads" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-widest">
+              <Link href="/leads" prefetch={false} className="text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-widest">
                 {t('dashboard.managerPipeline')}
               </Link>
             </div>
@@ -229,7 +229,7 @@ export default function Dashboard() {
                     </div>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Link href={`/leads/${lead.id}`} className="text-muted-foreground hover:text-indigo-600 transition-colors">
+                    <Link href={`/leads/${lead.id}`} prefetch={false} className="text-muted-foreground hover:text-indigo-600 transition-colors">
                       <ArrowUpRight size={16} />
                     </Link>
                   </td>

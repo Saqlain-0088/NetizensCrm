@@ -43,7 +43,7 @@ export default function NewLeadPage() {
 
     return (
         <div className="p-8 max-w-3xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <Link href="/leads" className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-muted-foreground hover:text-indigo-600 transition-colors">
+            <Link href="/leads" prefetch={false} className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-muted-foreground hover:text-indigo-600 transition-colors">
                 <ArrowLeft size={16} /> Return to Pipeline
             </Link>
 
@@ -172,7 +172,7 @@ export default function NewLeadPage() {
                     </div>
 
                     <div className="pt-8 border-t border-border/50 flex justify-end gap-3">
-                        <Link href="/leads" className="btn btn-outline h-11 px-8">Discard</Link>
+                        <Link href="/leads" prefetch={false} className="btn btn-outline h-11 px-8">Discard</Link>
                         <button type="submit" className="btn btn-primary h-11 px-10 font-black shadow-lg shadow-indigo-200" disabled={submitting}>
                             {submitting ? 'SYNCHRONIZING...' : 'INITIALIZE LEAD'}
                         </button>

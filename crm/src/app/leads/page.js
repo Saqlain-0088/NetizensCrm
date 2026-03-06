@@ -158,7 +158,7 @@ export default function LeadsPage() {
                     </div>
                     <ImportDataDialog type="Lead" apiUrl="/api/leads/import" onImportSuccess={fetchLeads} />
                     <Button asChild size="sm" className="h-9 px-3 text-xs bg-indigo-600 hover:bg-indigo-700">
-                        <Link href="/leads/new">
+                        <Link href="/leads/new" prefetch={false}>
                             <Plus size={14} className="mr-1" /> New Deal
                         </Link>
                     </Button>
@@ -191,7 +191,7 @@ export default function LeadsPage() {
                                         {filteredLeads.map(lead => (
                                             <TableRow key={lead.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/10 transition-colors group">
                                                 <TableCell className="px-6 py-4">
-                                                    <Link href={`/leads/${lead.id}`} className="block">
+                                                    <Link href={`/leads/${lead.id}`} prefetch={false} className="block">
                                                         <div className="font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 transition-colors">
                                                             {lead.company || '—'}
                                                         </div>
@@ -286,7 +286,7 @@ export default function LeadsPage() {
                                                                                     <div className="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[9px] font-bold text-muted-foreground overflow-hidden border border-border">
                                                                                         {lead.assigned_to ? lead.assigned_to[0] : '?'}
                                                                                     </div>
-                                                                                    <Link href={`/leads/${lead.id}`} className="text-muted-foreground hover:text-indigo-600">
+                                                                                    <Link href={`/leads/${lead.id}`} prefetch={false} className="text-muted-foreground hover:text-indigo-600">
                                                                                         <ChevronRight size={14} />
                                                                                     </Link>
                                                                                 </div>

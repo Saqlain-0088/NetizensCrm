@@ -32,9 +32,11 @@ export default function LeadDetailPage() {
     // Recording States
     const [isRecording, setIsRecording] = useState(false);
     const [recordingDuration, setRecordingDuration] = useState(0);
-    const [mediaRecorder, setMediaRecorder] = useState(null);
     const [audioChunks, setAudioChunks] = useState([]);
     const timerRef = useRef(null);
+    const mediaRecorderRef = useRef(null);
+    const streamRef = useRef(null);
+    const recordingMimeTypeRef = useRef('audio/webm');
 
     const fetchLead = async () => {
         try {
@@ -68,47 +70,89 @@ export default function LeadDetailPage() {
         }
     }, [id]);
 
+    const getSupportedMimeType = () => {
+        const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
+        for (const type of types) {
+            if (typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported?.(type)) {
+                return type;
+            }
+        }
+        return 'audio/webm';
+    };
+
     const startRecording = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const recorder = new MediaRecorder(stream);
+            streamRef.current = stream;
+            const mimeType = getSupportedMimeType();
+            recordingMimeTypeRef.current = mimeType;
+
+            let recorder;
+            try {
+                recorder = new MediaRecorder(stream, { mimeType });
+            } catch {
+                recorder = new MediaRecorder(stream);
+                recordingMimeTypeRef.current = recorder.mimeType || 'audio/webm';
+            }
+            mediaRecorderRef.current = recorder;
             setAudioChunks([]);
+
             recorder.ondataavailable = (e) => {
-                if (e.data.size > 0) setAudioChunks(prev => [...prev, e.data]);
+                if (e.data && e.data.size > 0) {
+                    setAudioChunks(prev => [...prev, e.data]);
+                }
             };
-            setMediaRecorder(recorder);
-            recorder.start();
+
+            recorder.onstop = () => {
+                streamRef.current?.getTracks().forEach(track => track.stop());
+                streamRef.current = null;
+            };
+
+            recorder.onerror = (e) => {
+                console.error('MediaRecorder error:', e);
+                streamRef.current?.getTracks().forEach(track => track.stop());
+            };
+
+            recorder.start(1000);
             setIsRecording(true);
             setRecordingDuration(0);
             timerRef.current = setInterval(() => setRecordingDuration(prev => prev + 1), 1000);
         } catch (err) {
-            alert('Mic access denied.');
+            console.error('Recording error:', err);
+            alert('Could not access microphone. Please check permissions and try again.');
         }
     };
 
     const stopRecording = () => {
-        if (mediaRecorder) {
-            mediaRecorder.stop();
+        const recorder = mediaRecorderRef.current;
+        if (recorder && recorder.state !== 'inactive') {
+            recorder.stop();
             setIsRecording(false);
             clearInterval(timerRef.current);
-            mediaRecorder.stream.getTracks().forEach(track => track.stop());
         }
     };
 
     useEffect(() => {
         if (!isRecording && audioChunks.length > 0) {
             const uploadRecording = async () => {
-                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                const mimeType = recordingMimeTypeRef.current || 'audio/webm';
+                const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
+                const audioBlob = new Blob(audioChunks, { type: mimeType });
                 const formData = new FormData();
-                formData.append('audio', audioBlob);
+                formData.append('audio', audioBlob, `recording.${ext}`);
                 formData.append('duration', recordingDuration);
 
                 setIsSaving(true);
                 try {
-                    await fetch(`/api/leads/${id}/record`, { method: 'POST', body: formData });
+                    const res = await fetch(`/api/leads/${id}/record`, { method: 'POST', body: formData });
+                    if (!res.ok) {
+                        const err = await res.json().catch(() => ({}));
+                        throw new Error(err.error || `Upload failed: ${res.status}`);
+                    }
                     fetchLead();
                 } catch (error) {
                     console.error('Upload failed:', error);
+                    alert(error.message || 'Failed to save recording. Please try again.');
                 } finally {
                     setIsSaving(false);
                     setAudioChunks([]);
@@ -116,7 +160,7 @@ export default function LeadDetailPage() {
             };
             uploadRecording();
         }
-    }, [isRecording, audioChunks]);
+    }, [isRecording, audioChunks, id, recordingDuration]);
 
     const updateLead = async (payload) => {
         setIsSaving(true);
@@ -176,7 +220,7 @@ export default function LeadDetailPage() {
             {/* Classic Header */}
             <header className="bg-white dark:bg-slate-950 border-b border-border px-8 py-4 flex items-center justify-between sticky top-0 z-40">
                 <div className="flex items-center gap-4">
-                    <Link href="/leads" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg transition-colors text-muted-foreground border border-transparent hover:border-border">
+                    <Link href="/leads" prefetch={false} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg transition-colors text-muted-foreground border border-transparent hover:border-border">
                         <ArrowLeft size={18} />
                     </Link>
                     <div>

@@ -17,13 +17,15 @@ export async function POST(request, { params }) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        const filename = `recording-${id}-${Date.now()}.webm`;
+        const ext = file.name?.split('.').pop() || (file.type?.includes('mp4') ? 'mp4' : 'webm');
+        const filename = `recording-${id}-${Date.now()}.${ext}`;
+        const contentType = file.type || (ext === 'mp4' ? 'audio/mp4' : 'audio/webm');
 
         // Upload to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
             .from('audio')
             .upload(filename, buffer, {
-                contentType: file.type || 'audio/webm',
+                contentType,
                 upsert: true
             });
 

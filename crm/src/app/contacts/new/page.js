@@ -45,7 +45,7 @@ export default function NewContactPage() {
             <div className="max-w-2xl mx-auto w-full">
                 <div className="mb-6 flex items-center gap-4">
                     <Button variant="ghost" size="icon" asChild>
-                        <Link href="/contacts">
+                        <Link href="/contacts" prefetch={false}>
                             <ArrowLeft size={18} />
                         </Link>
                     </Button>

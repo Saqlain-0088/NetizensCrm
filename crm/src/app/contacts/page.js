@@ -53,7 +53,7 @@ export default function ContactsPage() {
                     </div>
                     <ImportDataDialog type="Contact" apiUrl="/api/contacts/import" onImportSuccess={fetchContacts} />
                     <Button asChild size="sm" className="h-9 px-3 text-xs bg-indigo-600 hover:bg-indigo-700">
-                        <Link href="/contacts/new">
+                        <Link href="/contacts/new" prefetch={false}>
                             <Plus size={14} className="mr-1" /> New Contact
                         </Link>
                     </Button>
@@ -119,7 +119,7 @@ export default function ContactsPage() {
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <Button variant="ghost" size="sm" asChild>
-                                                <Link href={`/contacts/${contact.id}`}>View</Link>
+                                                <Link href={`/contacts/${contact.id}`} prefetch={false}>View</Link>
                                             </Button>
                                         </TableCell>
                                     </TableRow>
