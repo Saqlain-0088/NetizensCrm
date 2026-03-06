@@ -32,12 +32,14 @@ export default function VoiceRecorder({ onSave, leadId = null }) {
                 recognition.onresult = (event) => {
                     let currentTranscript = '';
                     for (let i = event.resultIndex; i < event.results.length; i++) {
-                        currentTranscript += event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            currentTranscript += event.results[i][0].transcript;
+                        }
                     }
 
-                    // We only get interim results if isRecording is true, but since we use continuous=true
-                    // it appends. Let's make sure we are correctly storing the full text.
-                    setTranscription(prev => prev + ' ' + currentTranscript.trim());
+                    if (currentTranscript) {
+                        setTranscription(prev => (prev ? prev + ' ' : '') + currentTranscript.trim());
+                    }
                 };
 
                 // On error, just log it. (e.g. no mic access)

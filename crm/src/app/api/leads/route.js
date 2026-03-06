@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
+import { sendWhatsAppNotification } from '@/lib/whatsapp';
 
 // Helper to add CORS headers
 function corsHeaders() {
@@ -33,12 +34,14 @@ export async function POST(request) {
 
         // --- Auto Assignment Logic (Simple Round Robin / Random for demo) ---
         // In a real app, you'd fetch active team members from the DB.
-        const teamResult = await db.execute("SELECT name FROM team WHERE status = 'Active'");
+        const teamResult = await db.execute("SELECT * FROM team WHERE status = 'Active'");
         const teamRows = teamResult.rows;
 
         let assignedTo = 'Unassigned';
+        let assignedMember = null;
         if (teamRows.length > 0) {
-            assignedTo = teamRows[Math.floor(Math.random() * teamRows.length)].name;
+            assignedMember = teamRows[Math.floor(Math.random() * teamRows.length)];
+            assignedTo = assignedMember.name;
         }
 
         const info = await db.execute({
@@ -53,6 +56,24 @@ export async function POST(request) {
             sql: 'INSERT INTO actions (lead_id, type, content) VALUES (?, ?, ?)',
             args: [leadId, 'System', `Lead created via ${source}. Auto-assigned to ${assignedTo}.`]
         });
+
+        // TRIGGER WHATSAPP ON AUTO-ASSIGNMENT
+        if (assignedMember) {
+            const leadRes = await db.execute({
+                sql: 'SELECT * FROM leads WHERE id = ?',
+                args: [leadId]
+            });
+            const lead = leadRes.rows[0];
+
+            if (lead) {
+                await sendWhatsAppNotification(assignedMember, lead, 'new_lead');
+
+                await db.execute({
+                    sql: 'INSERT INTO actions (lead_id, type, content) VALUES (?, ?, ?)',
+                    args: [leadId, 'System', `WhatsApp notification dispatched to ${assignedTo}.`]
+                });
+            }
+        }
 
         return NextResponse.json(
             { id: leadId, assignedTo, message: 'Lead created successfully' },

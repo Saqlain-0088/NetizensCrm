@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
+import { supabase } from '@/lib/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import { verifyAuth } from '@/lib/utils';
-import fs from 'fs';
-import path from 'path';
 
 export async function POST(request) {
     try {
@@ -25,24 +24,31 @@ export async function POST(request) {
 
         const noteId = uuidv4();
 
-        // Ensure upload directory exists
-        const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'audio');
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
-        }
-
-        // Generate filename and save locally (for local development/deployment)
+        // Generate filename
         const fileExtension = audioFile.name?.split('.').pop() || 'webm';
         const fileName = `${noteId}.${fileExtension}`;
-        const filePath = path.join(uploadDir, fileName);
 
-        // Convert File to Buffer and write to disk
+        // Convert File to Buffer for upload
         const arrayBuffer = await audioFile.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
-        fs.writeFileSync(filePath, buffer);
 
-        // Web accessible URL
-        const audioUrl = `/uploads/audio/${fileName}`;
+        // Upload to Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('audio')
+            .upload(fileName, buffer, {
+                contentType: audioFile.type || 'audio/webm',
+                upsert: true
+            });
+
+        if (uploadError) {
+            console.error('Supabase Storage Error:', uploadError);
+            throw new Error(`Failed to upload to Supabase: ${uploadError.message}`);
+        }
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+            .from('audio')
+            .getPublicUrl(fileName);
 
         // Insert into database
         await db.execute({
@@ -50,7 +56,7 @@ export async function POST(request) {
                 INSERT INTO notes (id, user_id, lead_id, audio_url, transcribed_text, duration)
                 VALUES (?, ?, ?, ?, ?, ?)
             `,
-            args: [noteId, authResult.user.id, leadId, audioUrl, transcribedText, duration]
+            args: [noteId, authResult.user.id, leadId, publicUrl, transcribedText, duration]
         });
 
         return NextResponse.json({

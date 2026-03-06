@@ -57,34 +57,67 @@ export async function PUT(request, { params }) {
         args.push(id);
 
         if (updates.length > 0) {
+            // Get current lead state for comparison and info
+            const oldLeadRes = await db.execute({
+                sql: 'SELECT * FROM leads WHERE id = ?',
+                args: [id]
+            });
+            const oldLead = oldLeadRes.rows[0];
+
             await db.execute({
                 sql: `UPDATE leads SET ${updates.join(', ')} WHERE id = ?`,
                 args
             });
 
+            // Get updated lead
+            const leadRes = await db.execute({
+                sql: 'SELECT * FROM leads WHERE id = ?',
+                args: [id]
+            });
+            const lead = leadRes.rows[0];
+
             // Log status/priority changes
-            if (status || priority) {
-                await db.execute({
-                    sql: 'INSERT INTO actions (lead_id, type, content) VALUES (?, ?, ?)',
-                    args: [id, 'SystemUpdate', `Modified ${status ? `status: ${status}` : ''} ${priority ? `priority: ${priority}` : ''}`]
+            if (status !== undefined || priority !== undefined) {
+                const logs = [];
+                if (status !== undefined && status !== oldLead.status) logs.push(`status: ${status}`);
+                if (priority !== undefined && priority !== oldLead.priority) logs.push(`priority: ${priority}`);
+
+                if (logs.length > 0) {
+                    await db.execute({
+                        sql: 'INSERT INTO actions (lead_id, type, content) VALUES (?, ?, ?)',
+                        args: [id, 'SystemUpdate', `Modified ${logs.join(', ')}`]
+                    });
+                }
+            }
+
+            // TRIGGER WHATSAPP ON STAGE CHANGE
+            if (status !== undefined && status !== oldLead.status) {
+                const memberRes = await db.execute({
+                    sql: 'SELECT * FROM team WHERE name = ?',
+                    args: [lead.assigned_to]
                 });
+                const member = memberRes.rows[0];
+
+                if (member && lead) {
+                    await sendWhatsAppNotification(member, lead, 'stage_change');
+
+                    await db.execute({
+                        sql: 'INSERT INTO actions (lead_id, type, content) VALUES (?, ?, ?)',
+                        args: [id, 'System', `WhatsApp status update notification dispatched to ${lead.assigned_to}.`]
+                    });
+                }
             }
 
             // TRIGGER WHATSAPP ON MANUAL ASSIGNMENT
-            if (assigned_to) {
+            if (assigned_to !== undefined && assigned_to !== oldLead.assigned_to) {
                 const memberRes = await db.execute({
                     sql: 'SELECT * FROM team WHERE name = ?',
                     args: [assigned_to]
                 });
                 const member = memberRes.rows[0];
-                const leadRes = await db.execute({
-                    sql: 'SELECT * FROM leads WHERE id = ?',
-                    args: [id]
-                });
-                const lead = leadRes.rows[0];
 
                 if (member && lead) {
-                    await sendWhatsAppNotification(member, lead);
+                    await sendWhatsAppNotification(member, lead, 'new_lead');
 
                     await db.execute({
                         sql: 'INSERT INTO actions (lead_id, type, content) VALUES (?, ?, ?)',
