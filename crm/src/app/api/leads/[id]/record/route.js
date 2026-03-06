@@ -49,7 +49,7 @@ export async function POST(request, { params }) {
                 sql: 'SELECT url FROM recordings WHERE lead_id = ? AND filename = ?',
                 args: [leadId, filename]
             });
-            if (existing.rows.length > 0) {
+            if (existing.rows?.length > 0) {
                 return NextResponse.json({ success: true, url: existing.rows[0].url });
             }
         }
@@ -88,21 +88,41 @@ export async function POST(request, { params }) {
             }, { status: 500 });
         }
 
-        // Save entry in recordings history table
+        // Save entry in recordings (ON CONFLICT = race/duplicate, skip action insert)
         try {
-            await db.execute({
-                sql: 'INSERT INTO recordings (lead_id, url, filename, duration) VALUES (?, ?, ?, ?)',
-                args: [leadId, publicUrl, filename, duration]
-            });
-            await db.execute({
-                sql: 'INSERT INTO actions (lead_id, type, content) VALUES (?, ?, ?)',
-                args: [leadId, 'Recording', `Audio memo archived: ${filename}`]
-            });
+            let insertResult;
+            try {
+                insertResult = await db.execute({
+                    sql: `INSERT INTO recordings (lead_id, url, filename, duration) VALUES (?, ?, ?, ?)
+                          ON CONFLICT (lead_id, filename) DO NOTHING RETURNING id`,
+                    args: [leadId, publicUrl, filename, duration]
+                });
+            } catch (onConflictErr) {
+                if (onConflictErr?.code === '42P10') {
+                    // No unique constraint yet - use simple INSERT (run: node scripts/migrate-recordings-unique.js)
+                    insertResult = await db.execute({
+                        sql: 'INSERT INTO recordings (lead_id, url, filename, duration) VALUES (?, ?, ?, ?) RETURNING id',
+                        args: [leadId, publicUrl, filename, duration]
+                    });
+                } else throw onConflictErr;
+            }
+
+            const inserted = insertResult.rows?.length > 0;
+            if (inserted) {
+                await db.execute({
+                    sql: 'INSERT INTO actions (lead_id, type, content) VALUES (?, ?, ?)',
+                    args: [leadId, 'Recording', `Audio memo archived: ${filename}`]
+                });
+            }
         } catch (dbError) {
-            console.error('Database error:', dbError);
-            return NextResponse.json({
-                error: dbError?.message || 'Recording saved to storage but failed to save to database. Ensure the recordings table exists.'
-            }, { status: 500 });
+            if (dbError?.code === '23505') {
+                // Unique violation - duplicate, treat as success
+            } else {
+                console.error('Database error:', dbError);
+                return NextResponse.json({
+                    error: dbError?.message || 'Recording saved to storage but failed to save to database. Ensure the recordings table exists.'
+                }, { status: 500 });
+            }
         }
 
         return NextResponse.json({ success: true, url: publicUrl });

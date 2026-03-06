@@ -128,7 +128,7 @@ export default function LeadDetailPage() {
                 formData.append('upload_id', uploadIdRef.current || '');
 
                 setIsSaving(true);
-                fetch(`/api/leads/${id}/record`, { method: 'POST', body: formData })
+                fetch(`/api/leads/${id}/record`, { method: 'POST', body: formData, credentials: 'same-origin' })
                     .then(res => {
                         if (!res.ok) return res.json().then(err => { throw new Error(err.error || `Upload failed: ${res.status}`); });
                         return res;

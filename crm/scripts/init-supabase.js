@@ -89,6 +89,13 @@ async function init() {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
+        try {
+            await pool.query(`UPDATE recordings SET filename = 'legacy-' || id WHERE filename IS NULL`);
+            await pool.query(`
+                CREATE UNIQUE INDEX IF NOT EXISTS recordings_lead_filename_unique
+                ON recordings(lead_id, filename)
+            `);
+        } catch (_) { /* index may fail if duplicates exist; run migrate-recordings-unique.js */ }
         console.log('✅ Recordings table ready.');
 
         // 6. Notes table (from migrate-v9)

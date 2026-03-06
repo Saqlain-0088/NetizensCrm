@@ -1,11 +1,38 @@
-# Vercel Deployment Fix for ENOENT Error
+# Vercel Deployment Guide
 
-## Error
+## Production Checklist
+
+### Environment Variables (Vercel → Settings → Environment Variables)
+- `NEXT_PUBLIC_SUPABASE_URL` – Supabase project URL
+- `SUPABASE_SERVICE_ROLE_KEY` – **service_role** key (not anon) from Supabase → Settings → API
+- `DATABASE_URL` – PostgreSQL connection string
+
+### Supabase Setup
+1. Create an **audio** bucket in Supabase Dashboard → Storage
+2. Set the bucket to **Public**
+3. Use the **service_role** key (secret), not the anon key
+
+### Recording Duplicates Fix
+If recordings create duplicates in Activity Feed / Record Vault, run the migration:
+```bash
+node scripts/migrate-recordings-unique.js
+```
+Requires `DATABASE_URL` in `.env.local` (or set for production DB).
+
+### Verify Production
+- **Supabase status:** `https://your-app.vercel.app/api/debug-env` (no auth required)
+- Should return `overall: "VERIFIED"` when Supabase is configured correctly
+
+---
+
+## ENOENT Error Fix
+
+### Error
 ```
 ENOENT: no such file or directory, mkdir '/var/task/crm/public'
 ```
 
-## Root Directory is Already "crm"
+### Root Directory is Already "crm"
 
 If Root Directory is already set to `crm` and the error persists, try these steps:
 
