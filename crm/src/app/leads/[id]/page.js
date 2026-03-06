@@ -32,11 +32,14 @@ export default function LeadDetailPage() {
     // Recording States
     const [isRecording, setIsRecording] = useState(false);
     const [recordingDuration, setRecordingDuration] = useState(0);
-    const [audioChunks, setAudioChunks] = useState([]);
     const timerRef = useRef(null);
     const mediaRecorderRef = useRef(null);
     const streamRef = useRef(null);
     const recordingMimeTypeRef = useRef('audio/webm');
+    const audioChunksRef = useRef([]);
+    const recordingDurationRef = useRef(0);
+    const onstopProcessedRef = useRef(false);
+    const uploadIdRef = useRef(null);
 
     const fetchLead = async () => {
         try {
@@ -95,17 +98,49 @@ export default function LeadDetailPage() {
                 recordingMimeTypeRef.current = recorder.mimeType || 'audio/webm';
             }
             mediaRecorderRef.current = recorder;
-            setAudioChunks([]);
+            audioChunksRef.current = [];
+            onstopProcessedRef.current = false;
+            uploadIdRef.current = `rec-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 
             recorder.ondataavailable = (e) => {
                 if (e.data && e.data.size > 0) {
-                    setAudioChunks(prev => [...prev, e.data]);
+                    audioChunksRef.current.push(e.data);
                 }
             };
 
             recorder.onstop = () => {
                 streamRef.current?.getTracks().forEach(track => track.stop());
                 streamRef.current = null;
+
+                if (onstopProcessedRef.current) return;
+                onstopProcessedRef.current = true;
+
+                const chunks = audioChunksRef.current;
+                if (chunks.length === 0) return;
+
+                audioChunksRef.current = [];
+                const mimeType = recordingMimeTypeRef.current || 'audio/webm';
+                const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
+                const audioBlob = new Blob(chunks, { type: mimeType });
+                const formData = new FormData();
+                formData.append('audio', audioBlob, `recording.${ext}`);
+                formData.append('duration', recordingDurationRef.current);
+                formData.append('upload_id', uploadIdRef.current || '');
+
+                setIsSaving(true);
+                fetch(`/api/leads/${id}/record`, { method: 'POST', body: formData })
+                    .then(res => {
+                        if (!res.ok) return res.json().then(err => { throw new Error(err.error || `Upload failed: ${res.status}`); });
+                        return res;
+                    })
+                    .then(() => fetchLead())
+                    .catch(error => {
+                        console.error('Upload failed:', error);
+                        alert(error.message || 'Failed to save recording. Please try again.');
+                    })
+                    .finally(() => {
+                        setIsSaving(false);
+                    });
             };
 
             recorder.onerror = (e) => {
@@ -116,7 +151,11 @@ export default function LeadDetailPage() {
             recorder.start(1000);
             setIsRecording(true);
             setRecordingDuration(0);
-            timerRef.current = setInterval(() => setRecordingDuration(prev => prev + 1), 1000);
+            recordingDurationRef.current = 0;
+            timerRef.current = setInterval(() => {
+                setRecordingDuration(prev => prev + 1);
+                recordingDurationRef.current += 1;
+            }, 1000);
         } catch (err) {
             console.error('Recording error:', err);
             alert('Could not access microphone. Please check permissions and try again.');
@@ -131,36 +170,6 @@ export default function LeadDetailPage() {
             clearInterval(timerRef.current);
         }
     };
-
-    useEffect(() => {
-        if (!isRecording && audioChunks.length > 0) {
-            const uploadRecording = async () => {
-                const mimeType = recordingMimeTypeRef.current || 'audio/webm';
-                const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
-                const audioBlob = new Blob(audioChunks, { type: mimeType });
-                const formData = new FormData();
-                formData.append('audio', audioBlob, `recording.${ext}`);
-                formData.append('duration', recordingDuration);
-
-                setIsSaving(true);
-                try {
-                    const res = await fetch(`/api/leads/${id}/record`, { method: 'POST', body: formData });
-                    if (!res.ok) {
-                        const err = await res.json().catch(() => ({}));
-                        throw new Error(err.error || `Upload failed: ${res.status}`);
-                    }
-                    fetchLead();
-                } catch (error) {
-                    console.error('Upload failed:', error);
-                    alert(error.message || 'Failed to save recording. Please try again.');
-                } finally {
-                    setIsSaving(false);
-                    setAudioChunks([]);
-                }
-            };
-            uploadRecording();
-        }
-    }, [isRecording, audioChunks, id, recordingDuration]);
 
     const updateLead = async (payload) => {
         setIsSaving(true);
@@ -259,13 +268,15 @@ export default function LeadDetailPage() {
                     )}
                     <button
                         onClick={isRecording ? stopRecording : startRecording}
+                        disabled={isSaving}
                         className={clsx(
                             "btn h-9 px-4 text-xs font-black transition-all flex items-center gap-2",
-                            isRecording ? "btn-danger bg-red-600 text-white" : "btn-outline border-red-200 text-red-600 hover:bg-red-50"
+                            isRecording ? "btn-danger bg-red-600 text-white" : "btn-outline border-red-200 text-red-600 hover:bg-red-50",
+                            isSaving && "opacity-60 cursor-not-allowed"
                         )}
                     >
-                        {isRecording ? <Square size={14} fill="currentColor" /> : <Mic size={14} />}
-                        {isRecording ? 'STOP' : 'LIVE RECORD'}
+                        {isSaving ? <Loader2 size={14} className="animate-spin" /> : isRecording ? <Square size={14} fill="currentColor" /> : <Mic size={14} />}
+                        {isSaving ? 'Saving...' : isRecording ? 'STOP' : 'LIVE RECORD'}
                     </button>
                     <button
                         onClick={() => setEditMode(!editMode)}

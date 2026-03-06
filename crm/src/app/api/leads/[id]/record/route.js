@@ -13,6 +13,7 @@ export async function POST(request, { params }) {
         const formData = await request.formData();
         const file = formData.get('audio');
         const duration = parseInt(formData.get('duration') || '0', 10);
+        const uploadId = formData.get('upload_id')?.toString() || '';
 
         if (!file) {
             return NextResponse.json({ error: 'No audio file provided' }, { status: 400 });
@@ -39,8 +40,19 @@ export async function POST(request, { params }) {
         const buffer = Buffer.from(bytes);
 
         const ext = file.name?.split('.').pop() || (file.type?.includes('mp4') ? 'mp4' : 'webm');
-        const filename = `recording-${leadId}-${Date.now()}.${ext}`;
+        const filename = uploadId ? `recording-${leadId}-${uploadId}.${ext}` : `recording-${leadId}-${Date.now()}.${ext}`;
         const contentType = file.type || (ext === 'mp4' ? 'audio/mp4' : 'audio/webm');
+
+        // Deduplicate: if same upload_id already saved (e.g. duplicate onstop from Safari), return success
+        if (uploadId) {
+            const existing = await db.execute({
+                sql: 'SELECT url FROM recordings WHERE lead_id = ? AND filename = ?',
+                args: [leadId, filename]
+            });
+            if (existing.rows.length > 0) {
+                return NextResponse.json({ success: true, url: existing.rows[0].url });
+            }
+        }
 
         // Upload to Supabase Storage
         let publicUrl;

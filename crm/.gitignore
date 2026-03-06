@@ -43,3 +43,5 @@ next-env.d.ts
 # local database
 crm.db*
 recordings/
+
+.vercel
