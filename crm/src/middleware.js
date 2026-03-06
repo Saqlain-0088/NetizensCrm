@@ -9,7 +9,8 @@ export function middleware(request) {
     // 1. Define public routes that don't need authentication
     const isPublicRoute =
         pathname.startsWith('/login') ||
-        pathname.startsWith('/api/auth');
+        pathname.startsWith('/api/auth') ||
+        pathname.startsWith('/api/debug-env');
 
     // 2. Allow access to public routes and internal Next.js assets
     if (
