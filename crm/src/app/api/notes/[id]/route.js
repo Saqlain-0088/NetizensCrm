@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { verifyAuth } from '@/lib/utils';
-import fs from 'fs';
-import path from 'path';
 
 export async function PUT(request, { params }) {
     try {
@@ -58,22 +56,11 @@ export async function DELETE(request, { params }) {
             return NextResponse.json({ error: 'Note not found or you are not authorized' }, { status: 404 });
         }
 
-        const audioUrl = note.rows[0].audio_url;
-
-        // Delete from DB
+        // Delete from DB (audio is stored in Supabase, no local file to delete)
         await db.execute({
             sql: `DELETE FROM notes WHERE id = ? AND user_id = ?`,
             args: [id, authResult.user.id]
         });
-
-        // Delete local audio file
-        if (audioUrl && audioUrl.startsWith('/uploads/audio/')) {
-            const fileName = audioUrl.replace('/uploads/audio/', '');
-            const filePath = path.join(process.cwd(), 'public', 'uploads', 'audio', fileName);
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
-            }
-        }
 
         return NextResponse.json({ success: true });
     } catch (error) {

@@ -220,7 +220,7 @@ export default function LeadDetailPage() {
             {/* Classic Header */}
             <header className="bg-white dark:bg-slate-950 border-b border-border px-8 py-4 flex items-center justify-between sticky top-0 z-40">
                 <div className="flex items-center gap-4">
-                    <Link href="/leads" prefetch={false} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg transition-colors text-muted-foreground border border-transparent hover:border-border">
+                    <Link href="/leads" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg transition-colors text-muted-foreground border border-transparent hover:border-border">
                         <ArrowLeft size={18} />
                     </Link>
                     <div>

@@ -39,7 +39,7 @@ export default function TeamMemberDetailPage() {
             <header className="bg-white dark:bg-slate-950 border-b border-border px-8 py-6 sticky top-0 z-40">
                 <div className="max-w-6xl mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-6">
-                        <Link href="/team" prefetch={false} className="p-2.5 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-xl transition-all border border-slate-100 dark:border-slate-800">
+                        <Link href="/team" className="p-2.5 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-xl transition-all border border-slate-100 dark:border-slate-800">
                             <ArrowLeft size={18} className="text-slate-500" />
                         </Link>
                         <div className="flex items-center gap-5">
@@ -87,7 +87,7 @@ export default function TeamMemberDetailPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {data.leads.map((lead) => (
-                                <Link href={`/leads/${lead.id}`} prefetch={false} key={lead.id}>
+                                <Link href={`/leads/${lead.id}`} key={lead.id}>
                                     <div className="card p-5 bg-white dark:bg-slate-950 border-0 ring-1 ring-border/50 hover:ring-indigo-500/30 transition-all group relative overflow-hidden">
                                         <div className="flex justify-between items-start mb-4">
                                             <div>

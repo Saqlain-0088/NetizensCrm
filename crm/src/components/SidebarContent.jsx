@@ -71,7 +71,6 @@ export default function SidebarContent() {
                         <Link
                             key={item.href}
                             href={item.href}
-                            prefetch={false}
                             className={clsx(
                                 "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all group relative",
                                 isActive
@@ -96,7 +95,6 @@ export default function SidebarContent() {
                 </div>
                 <Link
                     href="/settings"
-                    prefetch={false}
                     className={clsx(
                         "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all group",
                         pathname === '/settings' ? "bg-slate-100 dark:bg-slate-900 text-indigo-600" : "text-muted-foreground hover:bg-slate-50 dark:hover:bg-slate-900/50 hover:text-foreground"

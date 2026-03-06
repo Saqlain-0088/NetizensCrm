@@ -154,7 +154,7 @@ export default function TeamPage() {
                             </div>
                         </div>
                         <div className="mt-6 pt-6 border-t border-border/50 flex items-center justify-between">
-                            <Link href={`/team/${member.id}`} prefetch={false} className="text-[10px] font-black text-indigo-600 hover:underline uppercase tracking-widest flex items-center gap-1">
+                            <Link href={`/team/${member.id}`} className="text-[10px] font-black text-indigo-600 hover:underline uppercase tracking-widest flex items-center gap-1">
                                 View Intelligence <ArrowRight size={10} />
                             </Link>
                             <div className="flex gap-1">
