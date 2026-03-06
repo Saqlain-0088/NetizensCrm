@@ -63,7 +63,7 @@ export async function POST(request) {
             id: noteId,
             user_id: authResult.user.id,
             lead_id: leadId,
-            audio_url: audioUrl,
+            audio_url: publicUrl,
             transcribed_text: transcribedText,
             duration: duration,
             created_at: new Date().toISOString()
