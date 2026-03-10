@@ -6,11 +6,14 @@ export function middleware(request) {
 
     // console.log(`Middleware tracing: ${pathname} | Session: ${session ? 'Exists' : 'Missing'}`);
 
-    // 1. Define public routes that don't need authentication
+    // 1. Define public routes (landing, signup, login)
     const isPublicRoute =
+        pathname === '/' ||
         pathname.startsWith('/login') ||
+        pathname.startsWith('/signup') ||
         pathname.startsWith('/api/auth') ||
-        pathname.startsWith('/api/debug-env');
+        pathname.startsWith('/api/debug-env') ||
+        pathname.startsWith('/superadmin'); // Allow superadmin panel access without session
 
     // 2. Allow access to public routes and internal Next.js assets
     if (
@@ -19,12 +22,12 @@ export function middleware(request) {
         pathname.includes('.') ||
         pathname === '/favicon.ico'
     ) {
+        // / always shows landing page (no redirect to dashboard)
         return NextResponse.next();
     }
 
     // 3. Redirect to /login if no session exists for private routes
     if (!session) {
-        // console.log(`Redirecting unauthorized access to ${pathname} -> /login`);
         const loginUrl = new URL('/login', request.url);
         return NextResponse.redirect(loginUrl);
     }
