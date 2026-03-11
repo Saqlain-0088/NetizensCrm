@@ -40,7 +40,14 @@ function LoginForm() {
             const data = await res.json();
 
             if (res.ok) {
-                router.push(callbackUrl);
+                // Route based on role if no specific callbackUrl was provided, 
+                // or if the callbackUrl is the default dashboard
+                let redirectPath = callbackUrl;
+                if (data.user.role === 'superadmin' && (callbackUrl === '/dashboard' || !searchParams.get('callbackUrl'))) {
+                    redirectPath = '/superadmin';
+                }
+
+                router.push(redirectPath);
                 router.refresh();
             } else {
                 setError(data.error || 'Invalid email or password');

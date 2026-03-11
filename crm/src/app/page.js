@@ -73,10 +73,7 @@ export default function LandingPage() {
                         </div>
                         <div className="flex items-center gap-4">
                             <Link href="/login" className="hidden sm:inline-block text-sm font-medium text-slate-300 hover:text-white transition-colors">
-                                Sign in as User
-                            </Link>
-                            <Link href="/superadmin" className="hidden sm:inline-block text-sm font-medium text-slate-300 hover:text-white transition-colors border-l border-slate-700 pl-4">
-                                Sign in as Admin
+                                Sign In
                             </Link>
                             <Link href="/signup">
                                 <motion.button
@@ -163,20 +160,10 @@ export default function LandingPage() {
                                 <motion.button
                                     whileHover={{ scale: 1.05, y: -5 }}
                                     whileTap={{ scale: 0.95 }}
-                                    className="w-full sm:w-80 px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold rounded-full flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all group"
+                                    className="w-full sm:w-80 px-12 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold rounded-full flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all group"
                                 >
-                                    Sign in as User
+                                    Sign In to Your Workspace
                                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                                </motion.button>
-                            </Link>
-                            <Link href="/superadmin">
-                                <motion.button
-                                    whileHover={{ scale: 1.05, y: -5 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="w-full sm:w-80 px-8 py-4 bg-slate-900 border border-slate-700 hover:border-cyan-500 text-white font-bold rounded-full flex items-center justify-center gap-2 backdrop-blur-sm transition-all"
-                                >
-                                    <Shield size={20} className="text-cyan-400" />
-                                    Sign in as Admin
                                 </motion.button>
                             </Link>
                         </div>
