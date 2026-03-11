@@ -147,10 +147,10 @@ export default function SidebarContent() {
                             await fetch('/api/auth/logout', { method: 'POST' });
                             window.location.href = '/login';
                         }}
-                        className="p-1 rounded text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                        title="Logout"
+                        className="flex items-center gap-2 px-2 py-1 rounded text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-bold text-[10px] uppercase tracking-wider"
                     >
-                        <LogOut size={16} />
+                        <LogOut size={14} />
+                        <span>Logout</span>
                     </button>
                 </div>
             </div>
