@@ -11,7 +11,7 @@ const FEATURES = [
     { icon: TrendingUp, title: 'Sales Pipeline', desc: 'Visualize your entire sales process with customizable deal stages and real-time revenue forecasting.', color: 'purple' },
     { icon: Users, title: 'Contact Book', desc: 'A centralized, secure database for all your customers with rich interaction histories.', color: 'fuchsia' },
     { icon: CheckSquare, title: 'Smart Follow-ups', desc: 'Automated task generation and intelligent reminders ensure you always follow up at the perfect time.', color: 'cyan' },
-    { icon: BarChart3, title: 'Advanced Analytics', desc: 'Deep insights into your team\'s performance with interactive dashboards and custom reports.', color: 'purple' },
+    { icon: BarChart3, title: 'Advanced Analytics', desc: 'Deep insights into your team&apos;s performance with interactive dashboards and custom reports.', color: 'purple' },
     { icon: Shield, title: 'Enterprise Security', desc: 'Bank-grade encryption and granular role-based access control to keep your business data safe.', color: 'fuchsia' },
 ];
 
@@ -22,9 +22,9 @@ const PRICING = [
 ];
 
 const TESTIMONIALS = [
-    { quote: "NetizensCRM has completely transformed how our sales team operates. We've seen a 40% increase in closed won deals in just one quarter.", author: 'Sarah Jenkins', role: 'VP of Sales', company: 'TechNova' },
-    { quote: "The dark mode and intuitive interface make it a joy to use every day. We ditched Salesforce for this and haven't looked back.", author: 'David Chen', role: 'Founder', company: 'GrowthLabs' },
-    { quote: "Finally, a CRM that doesn't feel like a chore to update. The automation features save my team at least 15 hours a week.", author: 'Elena Rodriguez', role: 'Sales Director', company: 'Acme Corp' },
+    { quote: "NetizensCRM has completely transformed how our sales team operates. We&apos;ve seen a 40% increase in closed won deals in just one quarter.", author: 'Sarah Jenkins', role: 'VP of Sales', company: 'TechNova' },
+    { quote: "The dark mode and intuitive interface make it a joy to use every day. We ditched Salesforce for this and haven&apos;t looked back.", author: 'David Chen', role: 'Founder', company: 'GrowthLabs' },
+    { quote: "Finally, a CRM that doesn&apos;t feel like a chore to update. The automation features save my team at least 15 hours a week.", author: 'Elena Rodriguez', role: 'Sales Director', company: 'Acme Corp' },
 ];
 
 const FAQ = [
@@ -320,7 +320,7 @@ export default function LandingPage() {
                                         <Star key={j} size={16} className="fill-cyan-500 text-cyan-500" />
                                     ))}
                                 </div>
-                                <p className="text-slate-300 mb-8 leading-relaxed">"{t.quote}"</p>
+                                <p className="text-slate-300 mb-8 leading-relaxed">&quot;{t.quote}&quot;</p>
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center font-bold text-white text-lg">
                                         {t.author.charAt(0)}
@@ -341,7 +341,7 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center max-w-2xl mx-auto mb-20">
                         <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 tracking-tight">Simple, transparent pricing.</h2>
-                        <p className="text-lg text-slate-400">No hidden fees. No surprise charges. Start for free and scale when you're ready.</p>
+                        <p className="text-lg text-slate-400">No hidden fees. No surprise charges. Start for free and scale when you&apos;re ready.</p>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -428,31 +428,31 @@ export default function LandingPage() {
                     <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-16">
                         <div className="flex items-center gap-2">
                             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-purple-500 flex items-center justify-center">
-                                <span className="text-white font-bold text-xs">L</span>
+                                <span className="text-white font-bold text-xs">N</span>
                             </div>
                             <span className="font-bold text-white">NetizensCRM</span>
                         </div>
-                        <div className="flex flex-wrap justify-center gap-6 md:gap-12 text-sm font-medium text-slate-400">
-                            <a href="#" className="hover:text-white transition-colors">Product</a>
-                            <a href="#" className="hover:text-white transition-colors">Pricing</a>
-                            <a href="#" className="hover:text-white transition-colors">About Us</a>
-                            <a href="#" className="hover:text-white transition-colors">Contact</a>
-                        </div>
-                        <div className="flex gap-4">
-                            <button className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-400/50 transition-colors">
-                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" /></svg>
-                            </button>
-                            <button className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-purple-400 hover:border-purple-400/50 transition-colors">
-                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
-                            </button>
-                        </div>
                     </div>
-                    <div className="pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-600">
-                        <p>© 2026 NetizensCRM. All rights reserved.</p>
-                        <div className="flex gap-4">
-                            <a href="#" className="hover:text-slate-400 transition-colors">Privacy Policy</a>
-                            <a href="#" className="hover:text-slate-400 transition-colors">Terms of Service</a>
-                        </div>
+                    <div className="flex flex-wrap justify-center gap-6 md:gap-12 text-sm font-medium text-slate-400">
+                        <a href="#" className="hover:text-white transition-colors">Product</a>
+                        <a href="#" className="hover:text-white transition-colors">Pricing</a>
+                        <a href="#" className="hover:text-white transition-colors">About Us</a>
+                        <a href="#" className="hover:text-white transition-colors">Contact</a>
+                    </div>
+                    <div className="flex gap-4">
+                        <button className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-400/50 transition-colors">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" /></svg>
+                        </button>
+                        <button className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-purple-400 hover:border-purple-400/50 transition-colors">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
+                        </button>
+                    </div>
+                </div>
+                <div className="pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-600">
+                    <p>© 2026 NetizensCRM. All rights reserved.</p>
+                    <div className="flex gap-4">
+                        <a href="#" className="hover:text-slate-400 transition-colors">Privacy Policy</a>
+                        <a href="#" className="hover:text-slate-400 transition-colors">Terms of Service</a>
                     </div>
                 </div>
             </footer>

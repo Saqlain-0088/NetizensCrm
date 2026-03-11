@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Mail, Lock, ShieldCheck, ArrowRight, Loader2, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function LoginPage() {
+function LoginForm() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [formData, setFormData] = useState({
@@ -63,7 +63,7 @@ export default function LoginPage() {
             >
                 <div className="flex justify-center mb-8">
                     <Link href="/" className="flex items-center gap-2 group">
-                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-violet-200 group-hover:scale-110 transition-transform">L</div>
+                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-violet-200 group-hover:scale-110 transition-transform">N</div>
                         <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">NetizensCRM</span>
                     </Link>
                 </div>
@@ -159,5 +159,17 @@ export default function LoginPage() {
                 </Card>
             </motion.div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+                <Loader2 className="animate-spin text-indigo-600" size={32} />
+            </div>
+        }>
+            <LoginForm />
+        </Suspense>
     );
 }

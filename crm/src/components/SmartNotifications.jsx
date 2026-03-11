@@ -73,7 +73,7 @@ export default function SmartNotifications() {
                             {notifications.length === 0 ? (
                                 <div className="p-8 text-center text-muted-foreground">
                                     <Bell size={24} className="mx-auto mb-2 opacity-20" />
-                                    <p className="text-xs font-medium">You're all caught up!</p>
+                                    <p className="text-xs font-medium">You&apos;re all caught up!</p>
                                 </div>
                             ) : (
                                 <div className="divide-y divide-border/30">
