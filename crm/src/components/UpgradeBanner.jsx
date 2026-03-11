@@ -34,16 +34,16 @@ export default function UpgradeBanner() {
             : 'bg-indigo-500';
 
     const bgColor = atLimit
-        ? 'bg-red-50 dark:bg-red-950/30 border-red-200/60 dark:border-red-900/40'
+        ? 'bg-red-50 border-red-200/60'
         : nearLimit
-            ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-200/60 dark:border-amber-900/40'
-            : 'bg-indigo-50 dark:bg-indigo-950/30 border-indigo-200/60 dark:border-indigo-900/40';
+            ? 'bg-amber-50 border-amber-200/60'
+            : 'bg-indigo-50 border-indigo-200/60';
 
     const textColor = atLimit
-        ? 'text-red-700 dark:text-red-300'
+        ? 'text-red-700'
         : nearLimit
-            ? 'text-amber-700 dark:text-amber-300'
-            : 'text-indigo-700 dark:text-indigo-300';
+            ? 'text-amber-700'
+            : 'text-indigo-700';
 
     const iconColor = atLimit ? 'text-red-500' : nearLimit ? 'text-amber-500' : 'text-indigo-500';
 
@@ -53,10 +53,10 @@ export default function UpgradeBanner() {
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                className={`${bgColor} border-b px-4 py-2 flex items-center justify-between gap-3 z-30`}
+                className={`${bgColor} border-b px-5 py-3 flex items-center justify-between gap-4 z-30 shadow-sm`}
             >
                 {/* Left: Plan badge + message */}
-                <div className="flex items-center gap-3 flex-1 min-w-0 flex-wrap">
+                <div className="flex items-center gap-4 flex-1 min-w-0">
                     {/* Free Plan Pill */}
                     <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-slate-900 border border-current/10 shadow-sm shrink-0 ${textColor}`}>
                         <Zap size={11} className={iconColor} fill="currentColor" />

@@ -1,4 +1,5 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { Megaphone, Plus, X, Loader2, ToggleLeft, ToggleRight, RefreshCw, Sparkles, Check, Edit2, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 

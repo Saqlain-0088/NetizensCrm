@@ -68,3 +68,22 @@ export async function PATCH(request) {
 
     return NextResponse.json({ success: true });
 }
+// DELETE a plan
+export async function DELETE(request) {
+    const session = await requireSuperAdmin();
+    if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
+
+    try {
+        await db.execute({ sql: 'DELETE FROM ai_feature_flags WHERE plan_id = ?', args: [id] });
+        await db.execute({ sql: 'DELETE FROM plans WHERE id = ?', args: [id] });
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Delete plan error:', error);
+        return NextResponse.json({ error: 'Failed to delete plan' }, { status: 500 });
+    }
+}
