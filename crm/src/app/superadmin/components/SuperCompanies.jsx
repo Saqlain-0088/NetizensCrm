@@ -24,11 +24,18 @@ export default function SuperCompanies() {
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState(null);
 
+    const [plans, setPlans] = useState([]);
+
     const fetchCompanies = () => {
         fetch('/api/superadmin/companies')
             .then(r => r.json())
             .then(d => { setCompanies(Array.isArray(d) ? d : []); setLoading(false); })
             .catch(() => setLoading(false));
+
+        fetch('/api/superadmin/plans')
+            .then(r => r.json())
+            .then(d => setPlans(Array.isArray(d) ? d : []))
+            .catch(() => { });
     };
 
     useEffect(() => { fetchCompanies(); }, []);
@@ -40,7 +47,7 @@ export default function SuperCompanies() {
     });
 
     const handleAction = async (id, action, extra = {}) => {
-        setActionLoading(id + action);
+        setActionLoading(id + (extra.plan_id ? 'plan' : action));
         await fetch(`/api/superadmin/companies/${id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
@@ -129,7 +136,17 @@ export default function SuperCompanies() {
                                         <div className="text-[10px] text-slate-400 font-medium tracking-tight">{c.admin_email}</div>
                                     </td>
                                     <td className="px-5 py-4">
-                                        <span className="text-xs font-black text-indigo-600 tracking-tight">{c.plan_name || 'FREE TRIAL'}</span>
+                                        <select
+                                            className="text-[10px] font-black uppercase bg-indigo-50 text-indigo-700 border-0 rounded-lg px-2 py-1 outline-none focus:ring-1 focus:ring-indigo-300 w-32 truncate"
+                                            value={c.plan_id || ''}
+                                            onChange={(e) => handleAction(c.id, c.status, { plan_id: e.target.value })}
+                                            disabled={actionLoading === c.id + 'plan'}
+                                        >
+                                            <option value="">Select Plan</option>
+                                            {plans.map(p => (
+                                                <option key={p.id} value={p.id}>{p.name}</option>
+                                            ))}
+                                        </select>
                                     </td>
                                     <td className="px-5 py-4">
                                         <div className="text-xs font-bold text-slate-600">

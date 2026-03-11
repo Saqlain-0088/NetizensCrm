@@ -24,7 +24,7 @@ export async function PATCH(request, { params }) {
     if (status) { updates.push('status = ?'); args.push(status); }
     if (plan_id) { updates.push('plan_id = ?'); args.push(plan_id); }
     if (extend_trial_days) {
-        updates.push("trial_ends_at = CURRENT_TIMESTAMP + INTERVAL '? days'");
+        updates.push("trial_ends_at = trial_ends_at + (? * INTERVAL '1 day')");
         args.push(extend_trial_days);
     }
     updates.push('updated_at = CURRENT_TIMESTAMP');
