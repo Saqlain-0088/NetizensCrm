@@ -49,7 +49,7 @@ export default function SidebarContent() {
     ];
 
     return (
-        <div className="flex flex-col h-full bg-white dark:bg-slate-950">
+        <div className="flex flex-col h-full bg-white">
             {/* Header / Brand (Only visible if not in mobile sheet where brand is in header) */}
             <div className="hidden lg:flex h-14 px-6 items-center justify-between border-b border-border/50">
                 <div className="flex items-center gap-2.5">
@@ -71,7 +71,7 @@ export default function SidebarContent() {
                     <input
                         type="text"
                         placeholder={t('common.searchPlaceholder')}
-                        className="w-full bg-slate-100 dark:bg-slate-900 border-0 rounded-md py-1.5 pl-9 pr-3 text-xs focus:ring-1 focus:ring-primary transition-all"
+                        className="w-full bg-slate-100 border-0 rounded-md py-1.5 pl-9 pr-3 text-xs focus:ring-1 focus:ring-primary transition-all"
                     />
                 </div>
             </div>
@@ -92,16 +92,16 @@ export default function SidebarContent() {
                             className={clsx(
                                 "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all group relative",
                                 isActive
-                                    ? "bg-slate-100 dark:bg-slate-900 text-indigo-600 dark:text-indigo-400"
-                                    : "text-muted-foreground hover:bg-slate-50 dark:hover:bg-slate-900/50 hover:text-foreground"
+                                    ? "bg-slate-100 text-indigo-600"
+                                    : "text-muted-foreground hover:bg-slate-50 hover:text-foreground"
                             )}
                         >
-                            <Icon size={18} className={clsx("transition-transform group-hover:scale-105", isActive && "text-indigo-600 dark:text-indigo-400")} />
+                            <Icon size={18} className={clsx("transition-transform group-hover:scale-105", isActive && "text-indigo-600")} />
                             <span>{item.label}</span>
                             {isActive && (
                                 <motion.div
                                     layoutId="sidebar-active"
-                                    className="absolute left-0 w-0.5 h-4 bg-indigo-600 dark:bg-indigo-400 rounded-full"
+                                    className="absolute left-0 w-0.5 h-4 bg-indigo-600 rounded-full"
                                 />
                             )}
                         </Link>
@@ -115,7 +115,7 @@ export default function SidebarContent() {
                     href="/settings"
                     className={clsx(
                         "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all group",
-                        pathname === '/settings' ? "bg-slate-100 dark:bg-slate-900 text-indigo-600" : "text-muted-foreground hover:bg-slate-50 dark:hover:bg-slate-900/50 hover:text-foreground"
+                        pathname === '/settings' ? "bg-slate-100 text-indigo-600" : "text-muted-foreground hover:bg-slate-50 hover:text-foreground"
                     )}
                 >
                     <Settings size={18} />
@@ -126,12 +126,12 @@ export default function SidebarContent() {
             {/* User Profile Section */}
             <div className="mt-auto p-4 border-t border-border/50">
                 {user?.email === (process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL || 'superadmin@netizenscrm.com') && (
-                    <Link href="/superadmin" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-bold text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all mb-2 border border-indigo-200/30 dark:border-indigo-800/30">
+                    <Link href="/superadmin" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-bold text-indigo-600 hover:bg-indigo-50 transition-all mb-2 border border-indigo-200/30">
                         <Shield size={16} className="text-indigo-500" />
                         <span>Super Admin Panel</span>
                     </Link>
                 )}
-                <div className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer group">
+                <div className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer group">
                     <div className="flex items-center gap-3 overflow-hidden">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white text-[11px] font-bold shrink-0">
                             {user?.name?.slice(0, 2).toUpperCase() || 'JS'}
@@ -147,7 +147,7 @@ export default function SidebarContent() {
                             await fetch('/api/auth/logout', { method: 'POST' });
                             window.location.href = '/login';
                         }}
-                        className="flex items-center gap-2 px-2 py-1 rounded text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-bold text-[10px] uppercase tracking-wider"
+                        className="flex items-center gap-2 px-2 py-1 rounded text-red-500 hover:bg-red-50 transition-colors font-bold text-[10px] uppercase tracking-wider"
                     >
                         <LogOut size={14} />
                         <span>Logout</span>

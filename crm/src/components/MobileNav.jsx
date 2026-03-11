@@ -10,7 +10,7 @@ export default function MobileNav() {
     const [open, setOpen] = useState(false);
 
     return (
-        <div className="lg:hidden flex items-center justify-between h-14 px-4 border-b border-border bg-white dark:bg-slate-950 sticky top-0 z-50">
+        <div className="lg:hidden flex items-center justify-between h-14 px-4 border-b border-border bg-white sticky top-0 z-50">
             <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded bg-indigo-600 flex items-center justify-center text-white font-bold text-sm">
                     N

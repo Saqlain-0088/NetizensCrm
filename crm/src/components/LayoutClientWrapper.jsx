@@ -10,9 +10,10 @@ import AIChatBot from '@/components/AIChatBot';
 
 export default function LayoutClientWrapper({ children }) {
     const pathname = usePathname();
+    const isSuperAdminRoute = pathname.startsWith('/superadmin');
     const isPublicLayout = pathname === '/' || pathname === '/login' || pathname.startsWith('/signup');
 
-    if (isPublicLayout) {
+    if (isPublicLayout || isSuperAdminRoute) {
         return (
             <main className="min-h-screen w-full">
                 {children}

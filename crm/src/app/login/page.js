@@ -106,13 +106,7 @@ function LoginForm() {
                             <div className="space-y-2 text-left">
                                 <div className="flex items-center justify-between">
                                     <label htmlFor="password" className="text-sm font-semibold text-slate-700">Password</label>
-                                    <button
-                                        type="button"
-                                        className="text-xs text-violet-600 hover:text-violet-700 font-bold transition-colors"
-                                        onClick={() => alert('Demo Passwords:\nadmin@netizenscrm.com -> admin123\nOthers -> password123')}
-                                    >
-                                        Forgot Password?
-                                    </button>
+
                                 </div>
                                 <div className="relative group">
                                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-violet-500 transition-colors" size={18} />

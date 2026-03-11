@@ -15,16 +15,17 @@ export default function TeamMemberDetailPage() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const fetchMember = async () => {
-        try {
-            const res = await fetch(`/api/team/${id}`);
-            const json = await res.json();
-            setData(json);
-            setLoading(false);
-        } catch (err) { console.error(err); }
-    };
-
-    useEffect(() => { if (id) fetchMember(); }, [id]);
+    useEffect(() => {
+        const fetchMember = async () => {
+            try {
+                const res = await fetch(`/api/team/${id}`);
+                const json = await res.json();
+                setData(json);
+                setLoading(false);
+            } catch (err) { console.error(err); }
+        };
+        if (id) fetchMember();
+    }, [id]);
 
     if (loading) return (
         <div className="flex items-center justify-center h-full">
