@@ -109,9 +109,45 @@ export async function POST(request, { params }) {
 
             const inserted = insertResult.rows?.length > 0;
             if (inserted) {
+                let transcript = "";
+                if (process.env.OPENAI_API_KEY) {
+                    try {
+                        const whisperFormData = new FormData();
+                        whisperFormData.append('file', new Blob([buffer], { type: contentType }), filename);
+                        whisperFormData.append('model', 'whisper-1');
+
+                        const whisperRes = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+                            },
+                            body: whisperFormData
+                        });
+
+                        if (!whisperRes.ok) {
+                            console.error("Whisper API error:", await whisperRes.text());
+                            transcript = "Audio uploaded successfully. [Speech-to-Text failed due to OpenAI API Error]";
+                        } else {
+                            const whisperData = await whisperRes.json();
+                            transcript = whisperData.text || "[No speech detected]";
+                        }
+                    } catch (e) {
+                        console.error("Transcribe error:", e);
+                        transcript = "Audio uploaded successfully. [Speech-to-Text service unreachable]";
+                    }
+                } else {
+                    transcript = "[API KEY REQUIRED] Please add OPENAI_API_KEY to your .env.local file to enable real-time accurate Speech-To-Text transcription from the recorded audio.";
+                }
+
+                // Call AI to summarize the transcript
+                const { summarizeNotes } = require('@/lib/ai');
+                const analysis = await summarizeNotes(transcript);
+
+                const richContent = `🎤 Audio Memo Archived: ${filename}\n\n**📝 Transcript:**\n"${transcript}"\n\n**✨ AI Summary:**\n${analysis.summary}\n\n**🎯 Next Action:**\n${analysis.actionItem}`;
+
                 await db.execute({
                     sql: 'INSERT INTO actions (lead_id, type, content) VALUES (?, ?, ?)',
-                    args: [leadId, 'Recording', `Audio memo archived: ${filename}`]
+                    args: [leadId, 'Recording', richContent]
                 });
             }
         } catch (dbError) {

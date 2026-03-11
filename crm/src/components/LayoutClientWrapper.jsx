@@ -5,33 +5,32 @@ import '@/lib/i18n';
 import { usePathname } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import MobileNav from '@/components/MobileNav';
+import UpgradeBanner from '@/components/UpgradeBanner';
+import AIChatBot from '@/components/AIChatBot';
 
 export default function LayoutClientWrapper({ children }) {
     const pathname = usePathname();
-    const isLoginPage = pathname === '/login';
+    const isPublicLayout = pathname === '/' || pathname === '/login' || pathname.startsWith('/signup');
 
-    if (isLoginPage) {
+    if (isPublicLayout) {
         return (
-            <main className="flex-1 overflow-y-auto relative bg-slate-50 dark:bg-slate-950">
+            <main className="min-h-screen w-full">
                 {children}
             </main>
         );
     }
 
     return (
-        <div className="flex flex-col lg:flex-row h-full w-full">
-            {/* Mobile Navigation */}
+        <div className="flex flex-col lg:flex-row h-full w-full relative">
             <MobileNav />
-
-            {/* Desktop Sidebar Navigation */}
             <Sidebar />
-
-            {/* Main Content Area */}
-            <main className="flex-1 overflow-y-auto relative bg-slate-50/50 dark:bg-slate-950/20">
-                <div className="min-h-full">
+            <main className="flex-1 overflow-y-auto relative bg-slate-50/50 dark:bg-slate-950/20 flex flex-col">
+                <UpgradeBanner />
+                <div className="min-h-full flex-1">
                     {children}
                 </div>
             </main>
+            <AIChatBot />
         </div>
     );
 }

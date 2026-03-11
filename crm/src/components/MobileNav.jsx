@@ -15,7 +15,7 @@ export default function MobileNav() {
                 <div className="w-7 h-7 rounded bg-indigo-600 flex items-center justify-center text-white font-bold text-sm">
                     L
                 </div>
-                <span className="font-bold text-[15px] tracking-tight">Lumina CRM</span>
+                <span className="font-bold text-[15px] tracking-tight">NetizensCRM</span>
             </div>
 
             <Sheet open={open} onOpenChange={setOpen}>

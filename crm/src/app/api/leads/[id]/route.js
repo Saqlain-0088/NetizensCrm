@@ -1,17 +1,21 @@
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { sendWhatsAppNotification } from '@/lib/whatsapp';
+import { getSession } from '@/lib/session';
 
 export async function GET(request, { params }) {
     try {
         const { id } = await params;
+        const session = await getSession();
+        if (!session?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
         const result = await db.execute({
-            sql: 'SELECT * FROM leads WHERE id = ?',
-            args: [id]
+            sql: 'SELECT * FROM leads WHERE id = ? AND created_by_email = ?',
+            args: [id, session.email]
         });
         const lead = result.rows[0];
-        if (!lead) return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
+        if (!lead) return NextResponse.json({ error: 'Lead not found or access denied' }, { status: 404 });
+
 
         // Fetch actions (follow-ups)
         const actionsResult = await db.execute({
@@ -57,17 +61,22 @@ export async function PUT(request, { params }) {
         args.push(id);
 
         if (updates.length > 0) {
-            // Get current lead state for comparison and info
+            // Get current lead state for comparison and info - and enforce ownership
+            const session = await getSession();
+            if (!session?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
             const oldLeadRes = await db.execute({
-                sql: 'SELECT * FROM leads WHERE id = ?',
-                args: [id]
+                sql: 'SELECT * FROM leads WHERE id = ? AND created_by_email = ?',
+                args: [id, session.email]
             });
             const oldLead = oldLeadRes.rows[0];
+            if (!oldLead) return NextResponse.json({ error: 'Lead not found or access denied' }, { status: 404 });
 
             await db.execute({
-                sql: `UPDATE leads SET ${updates.join(', ')} WHERE id = ?`,
-                args
+                sql: `UPDATE leads SET ${updates.join(', ')} WHERE id = ? AND created_by_email = ?`,
+                args: [...args, id, session.email]
             });
+
 
             // Get updated lead
             const leadRes = await db.execute({

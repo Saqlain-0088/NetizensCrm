@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { cookies } from 'next/headers';
+import bcrypt from 'bcryptjs';
 
 export async function POST(request) {
     try {
@@ -10,7 +11,6 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
         }
 
-        // 1. Find user by email
         const result = await db.execute({
             sql: 'SELECT * FROM users WHERE email = ?',
             args: [email]
@@ -22,18 +22,22 @@ export async function POST(request) {
 
         const user = result.rows[0];
 
-        // 2. Check password
-        // In a real application, you would use a library like bcrypt to compare hashes.
-        if (user.password !== password) {
+        // Check password (bcrypt hash or legacy plain for existing users)
+        const isBcrypt = user.password?.startsWith('$2');
+        const valid = isBcrypt
+            ? await bcrypt.compare(password, user.password)
+            : user.password === password;
+
+        if (!valid) {
             return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
         }
 
-        // 3. Create Session (simple cookie)
         const sessionData = JSON.stringify({
             id: user.id,
             email: user.email,
             name: user.name,
-            role: user.role
+            role: user.role,
+            plan: user.plan || 'free'
         });
 
         (await cookies()).set('crm_session', sessionData, {

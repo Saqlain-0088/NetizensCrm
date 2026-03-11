@@ -11,6 +11,7 @@ import Link from 'next/link';
 import clsx from 'clsx';
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
+import AIEmailModal from '@/components/AIEmailModal';
 
 const STATUS_STEPS = ['New', 'Contacted', 'Qualified', 'Negotiation', 'Won', 'Lost'];
 
@@ -23,6 +24,9 @@ export default function LeadDetailPage() {
     const [newNote, setNewNote] = useState('');
     const [isSaving, setIsSaving] = useState(false);
     const [team, setTeam] = useState([]);
+    const [aiScore, setAiScore] = useState(null);
+    const [analyzing, setAnalyzing] = useState(false);
+    const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
     // Editing states
     const [editMode, setEditMode] = useState(false);
@@ -52,6 +56,21 @@ export default function LeadDetailPage() {
             setDescription(data.description || '');
             setCompany(data.company || '');
             setLoading(false);
+
+            // Trigger AI scoring
+            setAnalyzing(true);
+            fetch('/api/ai/score', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ leadId: id })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.error) setAiScore(data);
+                    setAnalyzing(false);
+                })
+                .catch(() => setAnalyzing(false));
+
         } catch (err) {
             console.error(err);
             setLoading(false);
@@ -284,8 +303,11 @@ export default function LeadDetailPage() {
                     >
                         {editMode ? 'Cancel' : 'Modify'}
                     </button>
-                    <button className="btn btn-primary h-9 w-9 p-0 shadow-lg shadow-indigo-100 dark:shadow-indigo-900/40">
-                        <Plus size={16} />
+                    <button
+                        onClick={() => setIsEmailModalOpen(true)}
+                        className="btn btn-primary h-9 px-4 text-xs font-black flex items-center gap-2 shadow-lg shadow-indigo-100 dark:shadow-indigo-900/40"
+                    >
+                        <Mail size={14} /> AI DRAFT
                     </button>
                 </div>
             </header>
@@ -488,13 +510,41 @@ export default function LeadDetailPage() {
                     </div>
 
                     <div className="card p-4 bg-slate-900 text-white border-0 shadow-lg">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center font-black text-xs shrink-0 tracking-widest">AI</div>
-                            <p className="text-[11px] font-medium text-slate-300 leading-snug">Focus on {lead.priority} priority closing. Follow up on proposal sent in Q1.</p>
+                        <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center font-black text-xs shrink-0 tracking-widest">
+                                {analyzing ? <Loader2 size={16} className="animate-spin" /> : 'AI'}
+                            </div>
+                            <div className="flex-1">
+                                {analyzing ? (
+                                    <p className="text-[11px] font-medium text-slate-300 animate-pulse">Analyzing lead data...</p>
+                                ) : aiScore ? (
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-xs font-bold text-white tracking-wide">{aiScore.score} ({aiScore.probability}%)</span>
+                                            <span className={clsx("text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded",
+                                                aiScore.riskLevel === 'Low' ? 'bg-green-500/20 text-green-400' :
+                                                    aiScore.riskLevel === 'Medium' ? 'bg-amber-500/20 text-amber-400' :
+                                                        'bg-red-500/20 text-red-400'
+                                            )}>
+                                                Risk: {aiScore.riskLevel}
+                                            </span>
+                                        </div>
+                                        <p className="text-[11px] font-medium text-slate-300 leading-snug">{aiScore.reasoning}</p>
+                                    </div>
+                                ) : (
+                                    <p className="text-[11px] font-medium text-slate-300 leading-snug">Focus on {lead.priority} priority closing. Follow up on proposal sent in Q1.</p>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <AIEmailModal
+                isOpen={isEmailModalOpen}
+                onClose={() => setIsEmailModalOpen(false)}
+                lead={lead}
+            />
         </div>
     );
 }

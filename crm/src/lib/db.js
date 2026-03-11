@@ -4,9 +4,7 @@ const { Pool } = pkg
 
 const pool = globalThis.pgPool || new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false,
-    },
+    ssl: { rejectUnauthorized: false },
 })
 
 if (process.env.NODE_ENV !== "production") {

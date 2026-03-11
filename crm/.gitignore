@@ -45,3 +45,4 @@ crm.db*
 recordings/
 
 .vercel
+.env*.local

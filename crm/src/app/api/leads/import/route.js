@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
+import { getSession } from '@/lib/session';
 
 export async function POST(request) {
     try {
@@ -25,8 +26,11 @@ export async function POST(request) {
                 assignedTo = teamRows[Math.floor(Math.random() * teamRows.length)].name;
             }
 
+            const session = await getSession();
+            if (!session?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
             const info = await db.execute({
-                sql: "INSERT INTO leads (name, company, email, phone, value, source, status, priority, assigned_to) VALUES (?, ?, ?, ?, ?, ?, 'New', ?, ?) RETURNING id",
+                sql: "INSERT INTO leads (name, company, email, phone, value, source, status, priority, assigned_to, created_by_email) VALUES (?, ?, ?, ?, ?, ?, 'New', ?, ?, ?) RETURNING id",
                 args: [
                     name,
                     company || null,
@@ -35,7 +39,8 @@ export async function POST(request) {
                     value ? parseInt(value) : 0,
                     source || 'Import',
                     priority || 'Medium',
-                    assignedTo
+                    assignedTo,
+                    session.email
                 ]
             });
 

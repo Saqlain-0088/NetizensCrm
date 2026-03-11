@@ -19,10 +19,12 @@ export default function NewLeadPage() {
         priority: 'Medium'
     });
     const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitting(true);
+        setError('');
 
         try {
             const res = await fetch('/api/leads', {
@@ -30,12 +32,17 @@ export default function NewLeadPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
+            const data = await res.json().catch(() => ({}));
 
             if (res.ok) {
                 router.push('/leads');
+            } else if (res.status === 403 && data.code === 'LEAD_LIMIT_REACHED') {
+                setError(data.error || "You've reached your lead limit. Upgrade to Pro for unlimited leads.");
+            } else {
+                setError(data.error || 'Failed to create lead.');
             }
-        } catch (error) {
-            console.error(error);
+        } catch (err) {
+            setError('Something went wrong. Please try again.');
         } finally {
             setSubmitting(false);
         }
@@ -50,9 +57,15 @@ export default function NewLeadPage() {
             <div className="card bg-white dark:bg-slate-950 p-10 border-0 ring-1 ring-border/50 shadow-xl">
                 <div className="mb-10">
                     <h1 className="text-2xl font-black tracking-tight mb-2">Initialize New Prospect</h1>
-                    <p className="text-sm text-muted-foreground font-medium">Provision a new entry into the Lumina CRM intelligence layer.</p>
+                    <p className="text-sm text-muted-foreground font-medium">Provision a new entry into the NetizensCRM intelligence layer.</p>
                 </div>
 
+                {error && (
+                    <div className="mb-6 p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                        <p className="text-sm font-medium text-amber-800 dark:text-amber-200">{error}</p>
+                        <Link href="/" className="mt-2 inline-block text-sm font-semibold text-indigo-600 hover:text-indigo-700">Upgrade to Pro →</Link>
+                    </div>
+                )}
                 <form onSubmit={handleSubmit} className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-2">

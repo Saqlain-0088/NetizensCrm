@@ -12,10 +12,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 export default function NewContactPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError('');
 
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
@@ -26,15 +28,18 @@ export default function NewContactPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
+            const resData = await res.json().catch(() => ({}));
 
             if (res.ok) {
                 router.push('/contacts');
                 router.refresh();
+            } else if (res.status === 403 && resData.code === 'CONTACT_LIMIT_REACHED') {
+                setError(resData.error || "You've reached your contact limit. Upgrade to Pro for unlimited contacts.");
             } else {
-                console.error('Failed to create contact');
+                setError(resData.error || 'Failed to create contact.');
             }
-        } catch (error) {
-            console.error(error);
+        } catch (err) {
+            setError('Something went wrong. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -57,6 +62,12 @@ export default function NewContactPage() {
                         <CardTitle className="text-base">Contact Information</CardTitle>
                     </CardHeader>
                     <CardContent>
+                        {error && (
+                            <div className="mb-6 p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                                <p className="text-sm font-medium text-amber-800 dark:text-amber-200">{error}</p>
+                                <Link href="/" className="mt-2 inline-block text-sm font-semibold text-indigo-600 hover:text-indigo-700">Upgrade to Pro →</Link>
+                            </div>
+                        )}
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">

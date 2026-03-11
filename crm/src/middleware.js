@@ -12,8 +12,7 @@ export function middleware(request) {
         pathname.startsWith('/login') ||
         pathname.startsWith('/signup') ||
         pathname.startsWith('/api/auth') ||
-        pathname.startsWith('/api/debug-env') ||
-        pathname.startsWith('/superadmin'); // Allow superadmin panel access without session
+        pathname.startsWith('/api/debug-env');
 
     // 2. Allow access to public routes and internal Next.js assets
     if (
@@ -29,6 +28,7 @@ export function middleware(request) {
     // 3. Redirect to /login if no session exists for private routes
     if (!session) {
         const loginUrl = new URL('/login', request.url);
+        loginUrl.searchParams.set('callbackUrl', pathname);
         return NextResponse.redirect(loginUrl);
     }
 

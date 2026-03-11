@@ -19,9 +19,13 @@ async function init() {
                 email TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
                 role TEXT DEFAULT 'admin',
+                plan TEXT DEFAULT 'free',
+                company_name TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
+        await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS plan TEXT DEFAULT 'free'`).catch(() => {});
+        await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS company_name TEXT`).catch(() => {});
         console.log('✅ Users table ready.');
 
         // 2. Leads table

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {
     Plus, Search, Filter, LayoutList, LayoutGrid,
     MoreHorizontal, Calendar, ArrowUpRight,
-    Tag, Download, SlidersHorizontal, ChevronRight
+    Tag, Download, SlidersHorizontal, ChevronRight, Send, Loader2
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import confetti from 'canvas-confetti';
@@ -22,6 +22,7 @@ import {
     TableRow
 } from '@/components/ui/table';
 import { ImportDataDialog } from '@/components/ImportDataDialog';
+import BulkFollowUpModal from '@/components/BulkFollowUpModal';
 
 const COLUMNS = ['New', 'Contacted', 'Qualified', 'Negotiation', 'Won', 'Lost'];
 
@@ -31,6 +32,11 @@ export default function LeadsPage() {
     const [viewMode, setViewMode] = useState('board');
     const [search, setSearch] = useState('');
     const [hydrated, setHydrated] = useState(false);
+    const [selectedLeads, setSelectedLeads] = useState([]);
+    const [isBulksending, setIsBulksending] = useState(false);
+    const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+    const [filterStatus, setFilterStatus] = useState('All');
+    const [filterPriority, setFilterPriority] = useState('All');
 
     useEffect(() => {
         setHydrated(true);
@@ -107,10 +113,29 @@ export default function LeadsPage() {
         }());
     };
 
-    const filteredLeads = leads.filter(l =>
-        l.name.toLowerCase().includes(search.toLowerCase()) ||
-        (l.company && l.company.toLowerCase().includes(search.toLowerCase()))
-    );
+    const filteredLeads = leads.filter(l => {
+        const matchesSearch = l.name.toLowerCase().includes(search.toLowerCase()) || (l.company && l.company.toLowerCase().includes(search.toLowerCase()));
+        const matchesStatus = filterStatus === 'All' || l.status === filterStatus;
+        const matchesPriority = filterPriority === 'All' || l.priority === filterPriority;
+        return matchesSearch && matchesStatus && matchesPriority;
+    });
+
+    const toggleSelectAll = () => {
+        if (selectedLeads.length === filteredLeads.length) {
+            setSelectedLeads([]);
+        } else {
+            setSelectedLeads(filteredLeads.map(l => l.id));
+        }
+    };
+
+    const toggleSelectLead = (id) => {
+        setSelectedLeads(prev => prev.includes(id) ? prev.filter(lId => lId !== id) : [...prev, id]);
+    };
+
+    const handleBulkFollowUp = () => {
+        if (selectedLeads.length === 0) return;
+        setIsBulkModalOpen(true);
+    };
 
     if (loading || !hydrated) return (
         <div className="flex items-center justify-center min-h-[400px]">
@@ -118,8 +143,21 @@ export default function LeadsPage() {
         </div>
     );
 
+    // Build lead objects for modal (need full lead data, not just IDs)
+    const selectedLeadObjects = leads.filter(l => selectedLeads.includes(l.id));
+
     return (
         <div className="flex flex-col h-full bg-slate-50/50 dark:bg-slate-950/20">
+            <BulkFollowUpModal
+                isOpen={isBulkModalOpen}
+                onClose={() => setIsBulkModalOpen(false)}
+                selectedLeads={selectedLeadObjects}
+                onSuccess={() => {
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                    setSelectedLeads([]);
+                    fetchLeads();
+                }}
+            />
             {/* Top Toolbar */}
             <div className="min-h-16 h-auto py-4 px-4 md:px-8 border-b border-border bg-white dark:bg-slate-950 flex flex-col md:flex-row md:items-center justify-between sticky top-0 z-40 gap-4">
                 <div className="flex items-center justify-between md:justify-start gap-4 md:gap-6">
@@ -156,10 +194,41 @@ export default function LeadsPage() {
                             onChange={e => setSearch(e.target.value)}
                         />
                     </div>
+                    <select
+                        className="h-9 px-3 text-xs bg-white dark:bg-slate-950 border border-border rounded-lg outline-none focus:ring-2 focus:ring-indigo-600 cursor-pointer font-medium text-slate-700 dark:text-slate-300"
+                        value={filterStatus}
+                        onChange={e => setFilterStatus(e.target.value)}
+                    >
+                        <option value="All">All Stages</option>
+                        {COLUMNS.map(col => <option key={col} value={col}>{col}</option>)}
+                    </select>
+                    <select
+                        className="h-9 px-3 text-xs bg-white dark:bg-slate-950 border border-border rounded-lg outline-none focus:ring-2 focus:ring-indigo-600 cursor-pointer font-medium text-slate-700 dark:text-slate-300"
+                        value={filterPriority}
+                        onChange={e => setFilterPriority(e.target.value)}
+                    >
+                        <option value="All">All Priorities</option>
+                        <option value="Urgent">Urgent</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                    {selectedLeads.length > 0 && (
+                        <Button
+                            size="sm"
+                            variant="default"
+                            onClick={handleBulkFollowUp}
+                            disabled={isBulksending}
+                            className="bg-indigo-600 hover:bg-indigo-700 h-9 px-3 text-xs flex items-center shadow-lg shadow-indigo-100 dark:shadow-indigo-900/40"
+                        >
+                            {isBulksending ? <Loader2 size={14} className="mr-2 animate-spin" /> : <Send size={14} className="mr-2" />}
+                            AI Bulk Follow Up ({selectedLeads.length})
+                        </Button>
+                    )}
                     <ImportDataDialog type="Lead" apiUrl="/api/leads/import" onImportSuccess={fetchLeads} />
-                    <Button asChild size="sm" className="h-9 px-3 text-xs bg-indigo-600 hover:bg-indigo-700">
+                    <Button asChild size="sm" className="h-9 px-3 text-xs bg-indigo-600 hover:bg-indigo-700 hidden md:flex">
                         <Link href="/leads/new">
-                            <Plus size={14} className="mr-1" /> New Deal
+                            <Plus size={14} className="mr-1" /> New
                         </Link>
                     </Button>
                 </div>
@@ -179,6 +248,14 @@ export default function LeadsPage() {
                                 <Table>
                                     <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50">
                                         <TableRow>
+                                            <TableHead className="w-12 px-6">
+                                                <input
+                                                    type="checkbox"
+                                                    className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 h-4 w-4 cursor-pointer"
+                                                    checked={selectedLeads.length === filteredLeads.length && filteredLeads.length > 0}
+                                                    onChange={toggleSelectAll}
+                                                />
+                                            </TableHead>
                                             <TableHead className="px-6 font-bold text-muted-foreground uppercase tracking-widest text-[10px]">Company / Contact</TableHead>
                                             <TableHead className="px-6 font-bold text-muted-foreground uppercase tracking-widest text-[10px]">Stage</TableHead>
                                             <TableHead className="px-6 font-bold text-muted-foreground uppercase tracking-widest text-[10px] hidden sm:table-cell">Priority</TableHead>
@@ -190,6 +267,14 @@ export default function LeadsPage() {
                                     <TableBody>
                                         {filteredLeads.map(lead => (
                                             <TableRow key={lead.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/10 transition-colors group">
+                                                <TableCell className="px-6 py-4">
+                                                    <input
+                                                        type="checkbox"
+                                                        className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 h-4 w-4 cursor-pointer"
+                                                        checked={selectedLeads.includes(lead.id)}
+                                                        onChange={() => toggleSelectLead(lead.id)}
+                                                    />
+                                                </TableCell>
                                                 <TableCell className="px-6 py-4">
                                                     <Link href={`/leads/${lead.id}`} className="block">
                                                         <div className="font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 transition-colors">

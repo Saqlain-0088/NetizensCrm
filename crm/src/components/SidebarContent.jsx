@@ -10,23 +10,40 @@ import {
     Search,
     Bell,
     Shield,
-    ChevronDown
+    ChevronDown,
+    LogOut,
+    TrendingUp,
+    BookUser
 } from 'lucide-react';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
+import SmartNotifications from './SmartNotifications';
+import { useEffect, useState } from 'react';
+
 
 
 
 export default function SidebarContent() {
     const pathname = usePathname();
     const { t } = useTranslation();
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        fetch('/api/auth/me')
+            .then(res => res.json())
+            .then(data => {
+                if (data.user) setUser(data.user);
+            })
+            .catch(() => { });
+    }, []);
+
 
     const navItems = [
-        { href: '/', label: t('common.dashboard'), icon: LayoutDashboard },
-        { href: '/leads', label: t('common.pipeline'), icon: Users },
-        { href: '/contacts', label: 'Contacts', icon: Users }, // Using Users icon temporarily
+        { href: '/dashboard', label: t('common.dashboard'), icon: LayoutDashboard },
+        { href: '/leads', label: t('common.pipeline'), icon: TrendingUp },
+        { href: '/contacts', label: 'Contacts', icon: BookUser },
         { href: '/team', label: t('common.team'), icon: Shield },
         { href: '/leads/new', label: t('common.newLead'), icon: PlusCircle },
     ];
@@ -37,11 +54,12 @@ export default function SidebarContent() {
             <div className="hidden lg:flex h-14 px-6 items-center justify-between border-b border-border/50">
                 <div className="flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded bg-indigo-600 flex items-center justify-center text-white font-bold text-sm">
-                        L
+                        N
                     </div>
-                    <span className="font-bold text-[15px] tracking-tight">Lumina CRM</span>
+                    <span className="font-bold text-[15px] tracking-tight">NetizensCRM</span>
                 </div>
                 <div className="flex items-center gap-2">
+                    <SmartNotifications />
                     <LanguageSwitcher />
                 </div>
             </div>
@@ -65,7 +83,7 @@ export default function SidebarContent() {
                 </div>
                 {navItems.map((item) => {
                     const Icon = item.icon;
-                    const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
+                    const isActive = item.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(item.href);
 
                     return (
                         <Link
@@ -91,7 +109,7 @@ export default function SidebarContent() {
                 })}
 
                 <div className="pt-6 pb-2 px-3">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">{t('common.settings')}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Account</span>
                 </div>
                 <Link
                     href="/settings"
@@ -107,17 +125,33 @@ export default function SidebarContent() {
 
             {/* User Profile Section */}
             <div className="mt-auto p-4 border-t border-border/50">
+                {user?.email === (process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL || 'superadmin@netizenscrm.com') && (
+                    <Link href="/superadmin" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-bold text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all mb-2 border border-indigo-200/30 dark:border-indigo-800/30">
+                        <Shield size={16} className="text-indigo-500" />
+                        <span>Super Admin Panel</span>
+                    </Link>
+                )}
                 <div className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer group">
                     <div className="flex items-center gap-3 overflow-hidden">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white text-[11px] font-bold shrink-0">
-                            JS
+                            {user?.name?.slice(0, 2).toUpperCase() || 'JS'}
                         </div>
                         <div className="flex flex-col truncate">
-                            <span className="text-xs font-bold truncate">John Smith</span>
-                            <span className="text-[10px] text-muted-foreground truncate">john@lumina.io</span>
+                            <span className="text-xs font-bold truncate">{user?.name || 'John Smith'}</span>
+                            <span className="text-[10px] text-muted-foreground truncate">{user?.email || 'john@netizenscrm.com'}</span>
                         </div>
+
                     </div>
-                    <Bell size={14} className="text-muted-foreground group-hover:text-primary transition-colors" />
+                    <button
+                        onClick={async () => {
+                            await fetch('/api/auth/logout', { method: 'POST' });
+                            window.location.href = '/login';
+                        }}
+                        className="p-1 rounded text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                        title="Logout"
+                    >
+                        <LogOut size={16} />
+                    </button>
                 </div>
             </div>
         </div>
