@@ -101,31 +101,41 @@ function SettingsContent() {
                                             <div className="flex items-center gap-4">
                                                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-widest">
                                                     <Clock size={12} />
-                                                    Expires: {userData?.company?.trial_ends_at ? new Date(userData.company.trial_ends_at).toLocaleDateString() : 'Never'}
+                                                    Expires: {userData?.company?.trial_ends_at ? new Date(userData.company.trial_ends_at).toLocaleDateString() : (userData?.user?.role === 'superadmin' ? 'Lifetime' : 'Never')}
                                                 </div>
                                                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-widest text-emerald-300">
                                                     <CheckCircle2 size={12} />
-                                                    Status: Active
+                                                    Status: {userData?.user?.role === 'superadmin' ? 'Administrative' : 'Active'}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <CardContent className="p-8">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                            <UsageMetric
-                                                icon={TrendingUp}
-                                                label="Lead Volume"
-                                                used={userData?.usage?.leads?.used || 0}
-                                                limit={userData?.usage?.leads?.limit || 100}
-                                                color="indigo"
-                                            />
-                                            <UsageMetric
-                                                icon={Users}
-                                                label="Contacts Storage"
-                                                used={userData?.usage?.contacts?.used || 0}
-                                                limit={userData?.usage?.contacts?.limit || 250}
-                                                color="emerald"
-                                            />
+                                            {userData?.user?.role === 'superadmin' ? (
+                                                <div className="col-span-full p-6 bg-slate-50 border border-slate-100 rounded-2xl text-center">
+                                                    <Shield size={32} className="text-indigo-600 mx-auto mb-3 opacity-50" />
+                                                    <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Administrative Override Active</p>
+                                                    <p className="text-xs text-slate-400 mt-1">Usage metrics are not applicable to the Super Admin account.</p>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <UsageMetric
+                                                        icon={TrendingUp}
+                                                        label="Lead Volume"
+                                                        used={userData?.usage?.leads?.used || 0}
+                                                        limit={userData?.usage?.leads?.limit || 100}
+                                                        color="indigo"
+                                                    />
+                                                    <UsageMetric
+                                                        icon={Users}
+                                                        label="Contacts Storage"
+                                                        used={userData?.usage?.contacts?.used || 0}
+                                                        limit={userData?.usage?.contacts?.limit || 250}
+                                                        color="emerald"
+                                                    />
+                                                </>
+                                            )}
                                         </div>
                                     </CardContent>
                                 </Card>
