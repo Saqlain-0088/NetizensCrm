@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import confetti from 'canvas-confetti';
+import clsx from 'clsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,6 +24,7 @@ import {
 } from '@/components/ui/table';
 import { ImportDataDialog } from '@/components/ImportDataDialog';
 import BulkFollowUpModal from '@/components/BulkFollowUpModal';
+import PageHeader from '@/components/PageHeader';
 
 const COLUMNS = ['New', 'Contacted', 'Qualified', 'Negotiation', 'Won', 'Lost'];
 
@@ -159,43 +161,35 @@ export default function LeadsPage() {
                 }}
             />
             {/* Top Toolbar */}
-            <div className="min-h-16 h-auto py-4 px-4 md:px-8 border-b border-border bg-white dark:bg-slate-950 flex flex-col md:flex-row md:items-center justify-between sticky top-0 z-40 gap-4">
-                <div className="flex items-center justify-between md:justify-start gap-4 md:gap-6">
-                    <h1 className="text-lg font-bold">Pipeline</h1>
-
-                    <div className="h-9 flex bg-slate-100 dark:bg-slate-900 rounded-lg p-1 border border-border/50">
-                        <Button
-                            variant={viewMode === 'list' ? "secondary" : "ghost"}
-                            size="sm"
-                            onClick={() => setViewMode('list')}
-                            className="h-full px-3 text-xs font-bold"
-                        >
-                            <LayoutList size={14} className="mr-2" /> List
-                        </Button>
-                        <Button
-                            variant={viewMode === 'board' ? "secondary" : "ghost"}
-                            size="sm"
-                            onClick={() => setViewMode('board')}
-                            className="h-full px-3 text-xs font-bold"
-                        >
-                            <LayoutGrid size={14} className="mr-2" /> Board
-                        </Button>
-                    </div>
+            <PageHeader 
+                title="Pipeline" 
+                subtitle="Growth Engine"
+                searchPlaceholder="Search opportunities..."
+                searchValue={search}
+                onSearchChange={setSearch}
+            >
+                <div className="flex bg-slate-50 dark:bg-slate-900 rounded-xl p-1 border border-slate-200 dark:border-slate-800 shadow-inner mr-2 hidden md:flex">
+                    <Button
+                        variant={viewMode === 'list' ? "secondary" : "ghost"}
+                        size="sm"
+                        onClick={() => setViewMode('list')}
+                        className={clsx("h-8 px-3 text-[11px] font-black uppercase tracking-wider rounded-lg transition-all", viewMode === 'list' ? "bg-white dark:bg-slate-800 shadow-sm border-slate-200 dark:border-slate-700" : "text-slate-400")}
+                    >
+                        <LayoutList size={14} className="mr-1" /> List
+                    </Button>
+                    <Button
+                        variant={viewMode === 'board' ? "secondary" : "ghost"}
+                        size="sm"
+                        onClick={() => setViewMode('board')}
+                        className={clsx("h-8 px-3 text-[11px] font-black uppercase tracking-wider rounded-lg transition-all", viewMode === 'board' ? "bg-white dark:bg-slate-800 shadow-sm border-slate-200 dark:border-slate-700" : "text-slate-400")}
+                    >
+                        <LayoutGrid size={14} className="mr-1" /> Board
+                    </Button>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 md:gap-3">
-                    <div className="relative flex-1 min-w-[200px]">
-                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                        <Input
-                            type="text"
-                            placeholder="Find deals..."
-                            className="w-full h-9 pl-9 text-xs focus-visible:ring-indigo-600"
-                            value={search}
-                            onChange={e => setSearch(e.target.value)}
-                        />
-                    </div>
+                <div className="flex items-center gap-2">
                     <select
-                        className="h-9 px-3 text-xs bg-white dark:bg-slate-950 border border-border rounded-lg outline-none focus:ring-2 focus:ring-indigo-600 cursor-pointer font-medium text-slate-700 dark:text-slate-300"
+                        className="h-9 px-3 text-[10px] font-black uppercase tracking-widest bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer text-slate-700 dark:text-slate-300 shadow-sm hidden lg:block"
                         value={filterStatus}
                         onChange={e => setFilterStatus(e.target.value)}
                     >
@@ -203,7 +197,7 @@ export default function LeadsPage() {
                         {COLUMNS.map(col => <option key={col} value={col}>{col}</option>)}
                     </select>
                     <select
-                        className="h-9 px-3 text-xs bg-white dark:bg-slate-950 border border-border rounded-lg outline-none focus:ring-2 focus:ring-indigo-600 cursor-pointer font-medium text-slate-700 dark:text-slate-300"
+                        className="h-9 px-3 text-[10px] font-black uppercase tracking-widest bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer text-slate-700 dark:text-slate-300 shadow-sm hidden xl:block"
                         value={filterPriority}
                         onChange={e => setFilterPriority(e.target.value)}
                     >
@@ -213,26 +207,31 @@ export default function LeadsPage() {
                         <option value="Medium">Medium</option>
                         <option value="Low">Low</option>
                     </select>
-                    {selectedLeads.length > 0 && (
-                        <Button
-                            size="sm"
-                            variant="default"
-                            onClick={handleBulkFollowUp}
-                            disabled={isBulksending}
-                            className="bg-indigo-600 hover:bg-indigo-700 h-9 px-3 text-xs flex items-center shadow-lg shadow-indigo-100 dark:shadow-indigo-900/40"
-                        >
-                            {isBulksending ? <Loader2 size={14} className="mr-2 animate-spin" /> : <Send size={14} className="mr-2" />}
-                            AI Bulk Follow Up ({selectedLeads.length})
-                        </Button>
-                    )}
-                    <ImportDataDialog type="Lead" apiUrl="/api/leads/import" onImportSuccess={fetchLeads} />
-                    <Button asChild size="sm" className="h-9 px-3 text-xs bg-indigo-600 hover:bg-indigo-700 hidden md:flex">
-                        <Link href="/leads/new">
-                            <Plus size={14} className="mr-1" /> New
-                        </Link>
-                    </Button>
                 </div>
-            </div>
+                
+                {selectedLeads.length > 0 && (
+                    <Button
+                        size="sm"
+                        variant="default"
+                        onClick={handleBulkFollowUp}
+                        disabled={isBulksending}
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white h-9 px-4 text-[11px] font-black uppercase tracking-widest flex items-center rounded-lg shadow-md transition-all active:scale-95"
+                    >
+                        {isBulksending ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} className="mr-1.5" />}
+                        <span className="hidden sm:inline">AI Focus ({selectedLeads.length})</span>
+                    </Button>
+                )}
+                
+                <div className="hidden sm:flex items-center justify-center">
+                    <ImportDataDialog type="Lead" apiUrl="/api/leads/import" onImportSuccess={fetchLeads} />
+                </div>
+                
+                <Button asChild size="sm" className="h-9 px-4 text-[11px] font-black uppercase tracking-widest bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-white text-white dark:text-slate-900 flex items-center rounded-lg shadow-md transition-all active:scale-95">
+                    <Link href="/leads/new">
+                        <Plus size={16} className="mr-1.5" /> <span className="hidden sm:inline">New Deal</span>
+                    </Link>
+                </Button>
+            </PageHeader>
 
             {/* Content Area */}
             <div className="flex-1 overflow-auto p-4 md:p-8 custom-scrollbar">

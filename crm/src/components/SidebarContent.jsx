@@ -18,7 +18,6 @@ import {
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import LanguageSwitcher from './LanguageSwitcher';
 import SmartNotifications from './SmartNotifications';
 import { useEffect, useState } from 'react';
 
@@ -28,16 +27,20 @@ import { useEffect, useState } from 'react';
 export default function SidebarContent() {
     const pathname = usePathname();
     const { t } = useTranslation();
+    const [fullData, setFullData] = useState(null);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
         fetch('/api/auth/me')
             .then(res => res.json())
             .then(data => {
+                setFullData(data);
                 if (data.user) setUser(data.user);
             })
             .catch(() => { });
     }, []);
+
+    const aiFlags = fullData?.company?.ai_flags || {};
 
 
     const navItems = [
@@ -59,8 +62,7 @@ export default function SidebarContent() {
                     <span className="font-bold text-[15px] tracking-tight">NetizensCRM</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <SmartNotifications />
-                    <LanguageSwitcher />
+                    {(user?.role === 'superadmin' || aiFlags.smart_notifications !== false) && <SmartNotifications />}
                 </div>
             </div>
 

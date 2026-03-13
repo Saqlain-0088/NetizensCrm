@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Bell, AlertTriangle, TrendingUp, Clock, Check } from 'lucide-react';
+import { Bell, AlertTriangle, TrendingUp, Clock, Check, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
 import Link from 'next/link';
@@ -9,19 +9,25 @@ export default function SmartNotifications() {
     const [notifications, setNotifications] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
+    const [aiEnabled, setAiEnabled] = useState(true);
 
     useEffect(() => {
-        // Fetch AI generated notifications
-        fetch('/api/ai/notifications')
-            .then(res => res.json())
-            .then(data => {
-                if (Array.isArray(data)) {
-                    setNotifications(data);
-                    setUnreadCount(data.filter(n => !n.read).length);
-                }
-            })
-            .catch(console.error);
+        // Fetch AI generated notifications and user plan info
+        Promise.all([
+            fetch('/api/ai/notifications').then(res => res.json()),
+            fetch('/api/auth/me').then(res => res.json())
+        ]).then(([notifs, auth]) => {
+            if (Array.isArray(notifs)) {
+                setNotifications(notifs);
+                setUnreadCount(notifs.filter(n => !n.read).length);
+            }
+            if (auth?.user?.role !== 'superadmin' && auth?.company?.ai_flags?.smart_notifications === false) {
+                setAiEnabled(false);
+            }
+        }).catch(console.error);
     }, []);
+
+    if (!aiEnabled) return null;
 
     const markAsRead = (id) => {
         setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
@@ -52,7 +58,7 @@ export default function SmartNotifications() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.95 }}
                         transition={{ duration: 0.2, ease: "easeOut" }}
-                        className="absolute right-0 mt-3 w-96 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-200 overflow-hidden z-50 origin-top-right"
+                        className="absolute right-0 sm:-right-4 mt-3 w-[calc(100vw-2rem)] sm:w-96 max-w-[400px] bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-200 dark:border-slate-800 overflow-hidden z-[100] origin-top-right"
                     >
                         <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-slate-50/50">
                             <div>
@@ -106,19 +112,19 @@ export default function SmartNotifications() {
                                                         <Clock size={18} />}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-bold text-slate-900 leading-snug">
+                                                <p className="text-[13px] font-semibold text-slate-800 dark:text-slate-200 leading-relaxed break-words">
                                                     {notif.message}
                                                 </p>
-                                                <div className="flex items-center justify-between mt-3">
-                                                    <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
+                                                <div className="flex items-center justify-between mt-2.5">
+                                                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                                                         {notif.time}
                                                     </span>
                                                     {notif.link && (
                                                         <Link
                                                             href={notif.link}
-                                                            className="flex items-center gap-1 text-[10px] font-black text-indigo-600 hover:text-indigo-700 uppercase tracking-widest group-hover:translate-x-1 transition-transform"
+                                                            className="flex items-center gap-1 text-[11px] font-black text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 uppercase tracking-widest group-hover:translate-x-0.5 transition-transform"
                                                         >
-                                                            Take Action <Check size={12} />
+                                                            Action <Check size={12} strokeWidth={3} />
                                                         </Link>
                                                     )}
                                                 </div>
@@ -140,10 +146,10 @@ export default function SmartNotifications() {
                 )}
             </AnimatePresence>
 
-            {/* Click outside overlay */}
+            {/* Click outside overlay (Invisible, removes blurry effect but still acts as a dismissal layer) */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-40 bg-slate-900/5 backdrop-blur-[1px]"
+                    className="fixed inset-0 z-[90]"
                     onClick={() => setIsOpen(false)}
                 />
             )}

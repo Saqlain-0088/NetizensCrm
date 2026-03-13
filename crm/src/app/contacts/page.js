@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { ImportDataDialog } from '@/components/ImportDataDialog';
+import PageHeader from '@/components/PageHeader';
 
 export default function ContactsPage() {
     const [contacts, setContacts] = useState([]);
@@ -37,28 +38,22 @@ export default function ContactsPage() {
     return (
         <div className="flex flex-col h-full bg-slate-50/50 dark:bg-slate-950/20">
             {/* Toolbar */}
-            <div className="min-h-16 py-4 px-4 md:px-8 border-b border-border bg-white dark:bg-slate-950 flex flex-col md:flex-row md:items-center justify-between sticky top-0 z-40 gap-4">
-                <h1 className="text-xl font-bold tracking-tight">Contacts</h1>
-
-                <div className="flex flex-wrap items-center gap-2 md:gap-3">
-                    <div className="relative flex-1 min-w-[200px]">
-                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                        <Input
-                            type="text"
-                            placeholder="Search contacts..."
-                            className="w-full h-9 pl-9 text-xs"
-                            value={search}
-                            onChange={e => setSearch(e.target.value)}
-                        />
-                    </div>
+            <PageHeader
+                title="Contacts"
+                subtitle="Customer Database"
+                searchPlaceholder="Search contacts..."
+                searchValue={search}
+                onSearchChange={setSearch}
+            >
+                <div className="flex items-center gap-2">
                     <ImportDataDialog type="Contact" apiUrl="/api/contacts/import" onImportSuccess={fetchContacts} />
-                    <Button asChild size="sm" className="h-9 px-3 text-xs bg-indigo-600 hover:bg-indigo-700">
+                    <Button asChild size="sm" className="h-9 px-4 text-[11px] font-black uppercase tracking-widest bg-indigo-600 hover:bg-indigo-700 text-white flex items-center rounded-lg shadow-md transition-all active:scale-95">
                         <Link href="/contacts/new">
-                            <Plus size={14} className="mr-1" /> New Contact
+                            <Plus size={14} className="mr-1.5" /> <span className="hidden sm:inline">New Contact</span>
                         </Link>
                     </Button>
                 </div>
-            </div>
+            </PageHeader>
 
             {/* Content */}
             <div className="flex-1 overflow-auto p-4 md:p-8 custom-scrollbar">

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {
   Users, DollarSign, TrendingUp, Activity,
   ArrowUpRight, ArrowDownRight, MoreHorizontal, Calendar,
-  Briefcase, Target, Zap
+  Briefcase, Target, Zap, Search, Bell
 } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
@@ -14,7 +14,8 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Loader2 } from 'lucide-react';
+import SmartNotifications from '@/components/SmartNotifications';
+import PageHeader from '@/components/PageHeader';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -140,24 +141,18 @@ export default function Dashboard() {
 
   return (
     <div className="p-4 md:p-8 max-w-[1400px] mx-auto space-y-6 md:space-y-8 animate-in fade-in duration-500">
-      {/* Top Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl md:text-2xl font-bold tracking-tight">{t('dashboard.title')}</h1>
-          <p className="text-xs md:text-sm text-muted-foreground mt-0.5">{t('dashboard.subtitle')}</p>
-        </div>
-        <div className="flex items-center gap-2 md:gap-3">
-          <div className="hidden xs:flex bg-white dark:bg-slate-900 border border-border rounded-lg p-1 shadow-sm">
-            <button className="px-3 py-1 text-xs font-semibold bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-md">{t('dashboard.liveView')}</button>
-            <button className="px-3 py-1 text-xs font-semibold text-muted-foreground hover:text-foreground rounded-md">{t('dashboard.archive')}</button>
-          </div>
-          <Button asChild size="sm" className="bg-indigo-600 hover:bg-indigo-700">
-            <Link href="/leads/new">
-              <Zap size={14} className="mr-2 fill-current" /> {t('dashboard.autoCapture')}
-            </Link>
-          </Button>
-        </div>
-      </div>
+      {/* Modern Top Header Bar */}
+      <PageHeader
+        title={t('dashboard.title', 'Executive Overview')}
+        subtitle={t('dashboard.subtitle', 'Real-time revenue & pipeline metrics')}
+        searchPlaceholder="Search leads, contacts..."
+      >
+        <Button asChild className="h-10 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-md hover:-translate-y-0.5 transition-all font-bold">
+          <Link href="/leads/new">
+            <Zap size={16} className="mr-2 fill-current opacity-80" /> {t('dashboard.autoCapture', 'Auto Capture')}
+          </Link>
+        </Button>
+      </PageHeader>
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">

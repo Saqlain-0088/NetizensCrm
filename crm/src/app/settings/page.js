@@ -9,6 +9,7 @@ import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
 import { Suspense } from 'react';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 function SettingsContent() {
     const { t } = useTranslation();
@@ -71,11 +72,16 @@ function SettingsContent() {
                             </CardHeader>
                             <CardContent className="p-8">
                                 <p className="text-sm text-slate-600 mb-6 font-medium">
-                                    You can change your language from the top right menu or sidebar. The interface will reload to apply the language change.
+                                    You can change your language below. The interface will instantly update to reflect your choice.
                                 </p>
-                                <div className="flex gap-4">
-                                    <button className="px-6 py-3 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 font-black text-[11px] uppercase tracking-widest hover:bg-indigo-100 transition-all">English (US)</button>
-                                    <button className="px-6 py-3 rounded-2xl bg-white border border-slate-200 text-slate-400 font-black text-[11px] uppercase tracking-widest hover:bg-slate-50 transition-all">More Languages...</button>
+                                <div className="flex items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200">
+                                    <div className="flex-1">
+                                        <p className="text-sm font-bold text-slate-900">Active Language</p>
+                                        <p className="text-xs text-slate-500">Currently selected display language for your account.</p>
+                                    </div>
+                                    <div className="bg-slate-50 border border-slate-100 rounded-xl px-2">
+                                        <LanguageSwitcher />
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
@@ -194,26 +200,31 @@ export default function SettingsPage() {
 }
 
 function UsageMetric({ icon: Icon, label, used, limit, color }) {
-    const pct = Math.round((used / limit) * 100);
+    const isUnlimited = limit === null || limit < 0;
+    const pct = isUnlimited ? 0 : Math.round((used / (limit || 1)) * 100);
     const colorClass = color === 'indigo' ? 'bg-indigo-600' : 'bg-emerald-500';
 
     return (
         <div className="space-y-3">
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                    <Icon size={16} className={`text-${color}-500`} />
+                    <Icon size={16} className={color === 'indigo' ? 'text-indigo-500' : 'text-emerald-500'} />
                     <span className="text-[11px] font-black uppercase tracking-widest text-slate-400">{label}</span>
                 </div>
-                <span className="text-xs font-black text-slate-900">{used} / {limit}</span>
+                <span className="text-xs font-black text-slate-900">{used} / {isUnlimited ? '∞' : limit}</span>
             </div>
-            <div className="h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200 p-0.5">
-                <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${Math.min(pct, 100)}%` }}
-                    className={`h-full rounded-full ${colorClass}`}
-                />
-            </div>
-            <p className="text-[10px] font-bold text-slate-400 text-right uppercase tracking-wider">{pct}% of limit reached</p>
+            {!isUnlimited && (
+                <>
+                    <div className="h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200 p-0.5">
+                        <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${Math.min(pct, 100)}%` }}
+                            className={`h-full rounded-full ${colorClass}`}
+                        />
+                    </div>
+                    <p className="text-[10px] font-bold text-slate-400 text-right uppercase tracking-wider">{pct}% of limit reached</p>
+                </>
+            )}
         </div>
     );
 }
