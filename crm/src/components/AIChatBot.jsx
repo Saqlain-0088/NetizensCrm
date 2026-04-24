@@ -12,7 +12,19 @@ export default function AIChatBot() {
     ]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [aiFlags, setAiFlags] = useState(null);
+    const [userRole, setUserRole] = useState(null);
     const messagesEndRef = useRef(null);
+
+    useEffect(() => {
+        fetch('/api/auth/me')
+            .then(res => res.json())
+            .then(data => {
+                setAiFlags(data?.company?.ai_flags || {});
+                setUserRole(data?.user?.role);
+            })
+            .catch(() => { });
+    }, []);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -21,6 +33,8 @@ export default function AIChatBot() {
     useEffect(() => {
         scrollToBottom();
     }, [messages, isLoading]);
+
+    if (userRole !== 'superadmin' && aiFlags && aiFlags.chat_assistant === false) return null;
 
     const handleSend = async (e) => {
         e?.preventDefault();

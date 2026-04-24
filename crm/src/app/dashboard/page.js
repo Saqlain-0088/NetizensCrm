@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {
   Users, DollarSign, TrendingUp, Activity,
   ArrowUpRight, ArrowDownRight, MoreHorizontal, Calendar,
-  Briefcase, Target, Zap, Search, Bell
+  Briefcase, Target, Zap, Search, Bell, Loader2, Sparkles
 } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
@@ -14,7 +14,6 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import SmartNotifications from '@/components/SmartNotifications';
 import PageHeader from '@/components/PageHeader';
 
 export default function Dashboard() {
